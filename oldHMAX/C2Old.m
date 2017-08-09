@@ -1,0 +1,194 @@
+function [c2,s2Combination,c1,s1,bestBand,bestLocations] = C2(img,filters,filterSizes,c1Space,c1Scale,c1OL,linearPatches,patchSize,c1,IGNOREBORDERS,COMBINATION,BLUR,IGNOREPARTIALS,ALLS2C1PRUNE,ORIENTATIONS2C1PRUNE)
+% [c2,s2,c1,s1,bestBands,bestLocations] = C2(img,filters,filterSizes,c1Space,c1Scale,c1OL,linearPatches,patchSize,c1,IGNOREPARTIALS,ALLS2C1PRUNE,ORIENTATIONS2C1PRUNE)
+%
+% Given an image, filters, & patches, returns S1, C1, S2, & C2 unit responses.
+%
+% args:
+%
+%     img: a 2-dimensional matrix, the input image must be grayscale and of
+%     type 'double'
+%
+%     filters, filterSizes, c1Space, c1Scale, C1OL: see C1.m
+%
+%     linearPatches: a 2-dimensional matrix, the prototypes (patches) used in
+%     the extraction of s2. Each patch of size [m,n,d] is stored as a column in
+%     linearPatches, which has itself a size of [m*n*d, n_patches];
+%
+%     patchSize: a 3-element vector, [m n d], describing the size of each patch
+%     in 'linearPatches'. m is the number of rows, n the number of columns, and
+%     d the number of orientations.
+%
+%     c1: a precomputed c1 layer can be used to save computation time if
+%     available.  The proper format is the output of C1.m
+%
+%		IGNOREBORDERS: a logical, if 1, crop border of s2 matrix when calculating
+%		c2 to eliminate edge effects
+%
+%		COMBINATION: a logical, if 1, create all combination of (pairs, triples, quadruples
+%		etc.). Process is hardcoded for the time being.
+%
+%		BLUR: a logical, if 1, create a "blur" by taking every 2x2 sub component of S2 matrix
+%		and averaging them
+%
+%     IGNOREPARTIALS: a logical, if true, "partial" activations will be
+%     ignored, and only filter and patch activations completely on the image
+%     will be used. If false, all S2 activations are used.
+%
+%     ALLS2C1PRUNE, ORIENTATIONS2C1PRUNE: scalars, see windowedPatchDistance.m
+%
+% returns:
+%
+%     c2: a matrix [nPatches 1], contains the C2 responses for img
+%
+%     s2: a cell array [nPatches 1], contains the S2 responses for img
+%
+%     c1,s1: cell arrays, see C1.m
+%
+% See also C1 (C1.m)
+
+    s1 = []; % required for cached c1 activations
+    if (nargin < 15) ORIENTATIONS2C1PRUNE = 0; end;
+    if (nargin < 14) ALLS2C1PRUNE = 0; end;
+    if (nargin < 13) IGNOREPARTIALS = 0; end;
+	 if (nargin < 12) BLUR = 0; end;
+	 if (nargin < 11) COMBINATION = 0; end;
+	 if (nargin < 10) IGNOREBORDERS = 0; end; %NEEDS TO BE REWORKED; HARDCODED FOR NOW
+    if (nargin <  9 || isempty(c1)) [c1,s1] = C1(img,filters,filterSizes,c1Space,c1Scale,c1OL); end;
+
+    c1BandImg = c1;
+    nBands = length(c1);
+    nOrientations = patchSize(3);
+    nPatchRows = patchSize(1);
+    nPatchCols = patchSize(2);
+    nPatches = size(linearPatches,2);
+
+%% Build s2:
+    s2 = cell(nPatches,1);
+    for iPatch = 1:nPatches
+        squarePatch = reshape(linearPatches(:,iPatch),patchSize);
+        s2{iPatch} = cell(nBands,1);
+        for iBand = 1:nBands
+            s2{iPatch}{iBand} = windowedPatchDistance(c1BandImg{iBand},squarePatch,ALLS2C1PRUNE,ORIENTATIONS2C1PRUNE);  
+        end
+    end
+
+%% min pooling over every 2x2 neighborhood
+	if(BLUR)
+		m = cell(1, length(s2));
+		for iPatch = 1:length(s2)
+			m{iPatch} = cell(1, nBands);
+			for iBand = 1:nBands
+			m{iPatch}{iBand} = zeros(size(s2{iPatch}{iBand}, 1) - 1, size(s2{iPatch}{iBand}, 2) - 1);
+				for r = 1:size(s2{iPatch}{iBand}, 1) - 1
+					for c = 1:size(s2{iPatch}{iBand}, 2) - 1 
+						m{iPatch}{iBand}(r, c) = min([s2{iPatch}{iBand}(r, c), s2{iPatch}{iBand}(r + 1, c), s2{iPatch}{iBand}(r, c + 1), ...
+															s2{iPatch}{iBand}(r + 1, c + 1)]);
+					end
+				end	
+			end
+		end
+		s2 = {}; 
+		s2 = m;
+		m = {}; %save memory
+    end
+	
+%% Combination code
+	 if(COMBINATION)
+		%build combination of pairs
+%		count = 1;
+%		for iPatch1 = 1:nPatches - 1
+%			for iPatch2 = iPatch1 + 1:nPatches
+%				for iBand = 1:nBands
+%					s2Combination{count}{iBand} = s2{iPatch1}{iBand} + s2{iPatch2}{iBand};
+%				end
+%				count = count + 1;
+%			end
+%		end
+		%build combination of triples
+		count = 1;
+		for iPatch1 = 1:nPatches - 2
+			for iPatch2 = iPatch1 + 1:nPatches - 1
+				for iPatch3 = iPatch2 + 1:nPatches
+					for iBand = 1:nBands
+						s2Combination{count}{iBand} = s2{iPatch1}{iBand} + s2{iPatch2}{iBand} + s2{iPatch3}{iBand};
+					end
+					count = count + 1;
+				end
+			end
+		end
+		%build combination of quadruplets
+%		count = 1;
+%		for iPatch1 = 1:nPatches - 3
+%			for iPatch2 = iPatch1 + 1:nPatches - 2
+%				for iPatch3 = iPatch2 + 1:nPatches - 1
+%					for iPatch4 = iPatch3 + 1:nPatches
+%						for iBand = 1:nBands
+%							s2Combination{count}{iBand} = s2{iPatch1}{iBand} + s2{iPatch2}{iBand} + s2{iPatch3}{iBand} + s2{iPatch4}{iBand};
+%						end
+%						count = count + 1;
+%					end
+%				end
+%			end
+%		end
+	else
+		s2Combination = s2; %bad name
+	end
+%% average pooling over every 2c2 neighborhood (min is better but here in case it could be useful later)
+%	if(BLUR)
+%		tic;
+%		m = cell(1, length(s2Combination));
+%		for iPatch = 1:length(s2Combination)
+%			m{iPatch} = cell(1, nBands);
+%			for iBand = 1:nBands
+%			m{iPatch}{iBand} = zeros(size(s2Combination{iPatch}{iBand}, 1) - 1, size(s2Combination{iPatch}{iBand}, 2) - 1);
+%				for r = 1:size(s2Combination{iPatch}{iBand}, 1) - 1
+%					for c = 1:size(s2Combination{iPatch}{iBand}, 2) - 1 
+%						m{iPatch}{iBand}(r, c) = (s2Combination{iPatch}{iBand}(r, c) + s2Combination{iPatch}{iBand}(r + 1, c) + s2Combination{iPatch}{iBand}(r, c + 1) +...
+%															s2Combination{iPatch}{iBand}(r + 1, c + 1)) / 4;
+%					end
+%				end	
+%			end
+%		end
+%		s2Combination = {};
+%		s2Combination = m;
+%		m = {};
+%		toc;
+%	end
+
+%% Build c2:
+    c2 = inf(1,length(s2Combination));
+    for iPatch = 1:length(s2Combination)
+        for iBand = 1:nBands
+            [nRows, nCols] = size(s2Combination{iPatch}{iBand});
+            if IGNOREPARTIALS
+                ignorePartials = inf(nRows,nCols);
+                [nRowsImg, nColsImg] = size(img);
+                poolRange = c1Space(iBand);
+                maxFilterRows = 1:poolRange/2:nRowsImg;
+                maxFilterCols = 1:poolRange/2:nColsImg;
+                invalidS1Pre = ceil(filterSizes(c1Scale(iBand)*nOrientations)/2);
+                invalidS1Post = floor(filterSizes(c1Scale(iBand)*nOrientations)/2);
+                rMin = ceil(nPatchRows/2)+sum(ismember(maxFilterRows,1:invalidS1Pre));
+                rMax = nRows-floor(nPatchRows/2)-sum(ismember(maxFilterRows,(nRowsImg-(invalidS1Post+poolRange-1)):nRowsImg)); 
+                cMin = ceil(nPatchCols/2)+sum(ismember(maxFilterCols,1:invalidS1Pre));
+                cMax = nCols-floor(nPatchCols/2)-sum(ismember(maxFilterCols,(nColsImg-(invalidS1Post+poolRange-1)):nColsImg));
+                if rMin < rMax && cMin < cMax
+                    ignorePartials(rMin:rMax,cMin:cMax) = s2Combination{iPatch}{iBand}(rMin:rMax,cMin:cMax);
+                end
+                [minValue minLocation] = min(ignorePartials(:));
+				elseif IGNOREBORDERS %THE VALUES ARE HARDCODED! analyze how much to crop later; values based off heatmaps for unresized psychophysics quadrants
+					nRows = nRows - 7;
+					nCols = nCols - 7;
+					ignoreBorders = s2Combination{iPatch}{iBand}(3:size(s2Combination{iPatch}{iBand}, 1) - 5, 3:size(s2Combination{iPatch}{iBand}, 2) - 5);	
+					[minValue minLocation] = min(ignoreBorders(:));
+            else
+                [minValue minLocation] = min(s2Combination{iPatch}{iBand}(:));
+            end
+            if minValue < c2(iPatch)
+                c2(iPatch) = minValue;
+                bestBand(iPatch) = iBand;
+                [bestLocations(iPatch,1) bestLocations(iPatch,2)] = ind2sub([nRows,nCols], minLocation);
+            end
+        end
+    end
+end

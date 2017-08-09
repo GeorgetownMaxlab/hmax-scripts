@@ -1,0 +1,50 @@
+function setOfClusters(loadFolder,saveFolder,pIn)
+% pIn: cell array of patch matrices, the patch arrays over which to run kmeans
+% k: scalar, the number of patches per size, the number of clusters to make
+%
+% pOut: cell array of patch matrices, the universal patches (centroids)
+% labels: cell array, the centroids to which each patch from pIn was assigned
+
+%% Global variables
+
+if ispc == 1
+    loadLoc    = ['C:\Users\Levan\HMAX\patches\' loadFolder '\']
+    saveLoc    = ['C:\Users\Levan\HMAX\patches\' saveFolder '\']
+else    
+    loadLoc    = ['/home/levan/HMAX/patches/' loadFolder '/']
+    saveLoc    = ['/home/levan/HMAX/patches/' saveFolder '/']
+end
+
+if ~exist(saveLoc,'dir')
+    mkdir(saveLoc)
+end
+
+% Load the patches
+
+load([loadLoc 'patches.mat']);
+
+%% Start script
+% Create an array with desired cluster sizes specified.
+A = ones(1,10)*2;
+B = 6:15;
+k = A.^B;
+nClusterSizes = length(k);
+
+for iClusterSize = 1:5
+    [labels,pOut] = cellfun(@(x) kmeansPlusPlus(x,k(iClusterSize)),pIn,'UniformOutput',0);
+    
+    ps.patches = pOut;
+    ps.sizes   = [ps.sizes(1:3,1); size(pOut{1},2)]
+    ps.labels = 
+    
+    
+    if ~exist([saveLoc int2str(k(iClusterSize)) 'clusters'],'dir')
+        mkdir([saveLoc int2str(k(iClusterSize)) 'clusters'])
+    end
+    
+    
+    save([saveLoc int2str(k(iClusterSize)) 'clusters'],'labels
+    
+end
+
+end

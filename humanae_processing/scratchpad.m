@@ -1,39 +1,87 @@
-%% Find the left out background images in Jacob's database.
+%% Find duplicate background images in Jacob's database.
+
+% Code will take each image, and find closest 3 images. 
+
 clear; clc;
 
 dbstop if error;
 
 home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
-florencePath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_from_florence_not_in_jacobs_folder';
+% florencePath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_from_florence_not_in_jacobs_folder';
 % leftoverPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
-jacobPath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_not_used_by_florence';
+bgPath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_not_used_by_florence';
 
+saveLoc = fullfile(home,'duplicates');
+if ~exist(saveLoc)
+    mkdir(saveLoc)
+end
 
-florenceImgs = lsDir(florencePath,{'jpg'});
-jacobsImgs   = lsDir(jacobPath,{'jpg'});
+bgImgs = lsDir(bgPath,{'jpg'});
 
-for iFlorence = 1:length(florenceImgs)
-    iFlorence
-    saveLoc = fullfile(home,'differences',int2str(iFlorence));
-    if ~exist(saveLoc)
-        mkdir(saveLoc)
-    end
+leastError = zeros(length(bgImgs),length(bgImgs));
 
-    parfor iJacob = 1:length(jacobsImgs)
-        iJImg = imread(jacobsImgs{iJacob});
-        iFImg = imread(florenceImgs{iFlorence});
-        iFImg = imresize(iFImg,size(iJImg));
+for iBg = 1:length(bgImgs)
+    iBg
 
-        diffImg = iFImg - iJImg;
-        leastError(iJacob) = immse(iFImg,iJImg);
+    iImgOrig = imread(bgImgs{iBg});
+
+    parfor iComp = 1:length(bgImgs)
+%         iComp
+        iImgComp = imread(bgImgs{iComp});
+        
+        assert(isequal(size(iImgOrig),size(iImgComp)),'Image sizes differ');
+        
+%         diffImg = iImgOrig - iImgComp;
+        leastError(iBg,iComp) = immse(iImgOrig,iImgComp);
     end
     
-    [sortedError, Idx] = sort(leastError,'ascend');
+    [sortedError, Idx] = sort(leastError(iBg,:),'ascend');
     
-    for iWrite = 1:10
-        imwrite(imread(jacobsImgs{Idx(iWrite)}),fullfile(saveLoc,[int2str(iWrite) '_image.png']))
+    imwrite(iImgOrig,fullfile(saveLoc,[int2str(iBg-1) '_0.png'])); 
+    for iWrite = 1:4
+        imwrite(imread(bgImgs{Idx(iWrite)}),...
+                fullfile(saveLoc,[int2str(iBg-1) '_' int2str(iWrite) '.png']))
     end
 end
+
+save(fullfile(saveLoc,'leastError'),'leastError');
+
+%% Find the left out background images in Jacob's database.
+% clear; clc;
+% 
+% dbstop if error;
+% 
+% home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
+% florencePath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_from_florence_not_in_jacobs_folder';
+% % leftoverPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
+% jacobPath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_not_used_by_florence';
+% 
+% 
+% florenceImgs = lsDir(florencePath,{'jpg'});
+% jacobsImgs   = lsDir(jacobPath,{'jpg'});
+% 
+% for iFlorence = 1:length(florenceImgs)
+%     iFlorence
+%     saveLoc = fullfile(home,'differences',int2str(iFlorence));
+%     if ~exist(saveLoc)
+%         mkdir(saveLoc)
+%     end
+% 
+%     parfor iJacob = 1:length(jacobsImgs)
+%         iJImg = imread(jacobsImgs{iJacob});
+%         iFImg = imread(florenceImgs{iFlorence});
+%         iFImg = imresize(iFImg,size(iJImg));
+% 
+%         diffImg = iFImg - iJImg;
+%         leastError(iJacob) = immse(iFImg,iJImg);
+%     end
+%     
+%     [sortedError, Idx] = sort(leastError,'ascend');
+%     
+%     for iWrite = 1:10
+%         imwrite(imread(jacobsImgs{Idx(iWrite)}),fullfile(saveLoc,[int2str(iWrite) '_image.png']))
+%     end
+% end
 
 
 %% Exclude background images common between Florence's and Jake's databases.

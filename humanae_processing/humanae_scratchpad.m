@@ -1,97 +1,100 @@
 %% Reduce contrast of Jacob's bg images.
-% 
-% clear; clc; close all;
-% dbstop if error;
-% 
-% if ispc
-%     home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
-% else
-%     home = '/home/levan/HMAX/HumanaeFaces20170707_JGM';
-% end
-% 
-% % Get the range of stretchlim values of Florences images
-% floPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
-% floImgs = lsDir(floPath,{'jpg'});
-% allValues = zeros(length(floImgs),2);
-% 
-% for iImg = 1:length(floImgs)
-%    img = imread(floImgs{iImg});
-%    allValues(iImg,:) = stretchlim(img);
-% 
-% end
-% 
-% meanValues = mean(allValues,1);
-% stdValues  = std(allValues);
-% 
-% 
-% 
-% % Start adjusting Jacob's images.
-% bgPath = fullfile(home,'Backgrounds_not_used_by_florence');
-% bgImgs = lsDir(bgPath,{'jpg'});
-% 
-% refImg = imread('C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds\bgBazaar001.jpg');
-% 
-% for iImg = 1:length(bgImgs)
-%     idxRefImg = randi(100,1);
-%     bgImg = imread(bgImgs{iImg});
-%     
-%     bgImgAdj = stretch_histogram(bgImg,refImg);
-%     bgImgAdj = imadjust(bgImgAdj,stretchlim(bgImgAdj),allValues(idxRefImg,:));
-%     
-%     subplot(1,2,1)
-%     imshow(bgImg);
-%     subplot(1,2,2)
-%     imshow(bgImgAdj);
-%     
-%     
-% end
 
-%% Take only the unique images from Jacob's database.
-clear; clc; close all; dbstop if error;
+clear; clc; close all;
+dbstop if error;
+
 if ispc
     home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
 else
     home = '/home/levan/HMAX/HumanaeFaces20170707_JGM';
 end
 
+% Get the range of stretchlim values of Florences images
+floPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
+floImgs = lsDir(floPath,{'jpg'});
+allValues = zeros(length(floImgs),2);
+
+for iImg = 1:length(floImgs)
+   img = imread(floImgs{iImg});
+   allValues(iImg,:) = stretchlim(img);
+
+end
+
+meanValues = mean(allValues,1);
+stdValues  = std(allValues);
+
+
+
+% Start adjusting Jacob's images.
+% For each of Jacob's image, randomly choose an image from Florence's
+% folder, and use the stretchlim values of that image for contrast
+% normalization.
 bgPath = fullfile(home,'Backgrounds_not_used_by_florence');
-filtPath = fullfile(home,'filtered_backgrounds');
+bgImgs = lsDir(bgPath,{'jpg'});
 
+% refImg = imread('C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds\bgBazaar001.jpg');
 
-saveLoc = fullfile(home,'Backgrounds_not_used_by_florence_unique');
-if ~exist(saveLoc)
-    mkdir(saveLoc)
+parfor iImg = 1:length(bgImgs)
+    idxRefImg = randi(100,1);
+    bgImg = imread(bgImgs{iImg});
+    
+%     bgImgAdj = stretch_histogram(bgImg,refImg);
+    bgImgAdj = imadjust(bgImg,stretchlim(bgImg),allValues(idxRefImg,:));
+    
+%     subplot(1,2,1)
+%     imshow(bgImg);
+%     subplot(1,2,2)
+%     imshow(bgImgAdj);
+    [pathstr,name,ext] = fileparts(bgImgs{iImg});
+    imwrite(bgImgAdj,fullfile(home,'Backgrounds_not_used_by_florence_unique_normalized',[name '.png']));
 end
 
-bgImgs   = lsDir(bgPath,{'jpg'});
-filtImgs = lsDir(filtPath,{'png'});
-
-
-filtNames = dir(fullfile(home,'filtered_backgrounds'));
-filtNames = struct2cell(filtNames);
-filtNames = filtNames(1,3:end);
-
-key = '_';
-imgNumbers = [];
-
-for iFilt = 1:length(filtImgs)
-    idx_key = strfind(filtNames{iFilt},key);
-    imgNumber = filtNames{iFilt}(1:idx_key-1);
-    imgNumber = str2double(imgNumber);
-    imgNumbers(iFilt) = imgNumber;
-
-end
-imgNumbers = imgNumbers + 1;
-imgNumbers = sort(imgNumbers);
-
-% Now take only these imgNumber images from Jacob's original folder.
-
-uniqueBgs = bgImgs(imgNumbers);
-
-for iBg = 1:length(uniqueBgs)
-    [pathstr,name,ext] = fileparts(uniqueBgs{iBg});
-    copyfile(uniqueBgs{iBg},fullfile(saveLoc,[name '.png']));
-end
+%% Take only the unique images from Jacob's database.
+% clear; clc; close all; dbstop if error;
+% if ispc
+%     home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
+% else
+%     home = '/home/levan/HMAX/HumanaeFaces20170707_JGM';
+% end
+% 
+% bgPath = fullfile(home,'Backgrounds_not_used_by_florence');
+% filtPath = fullfile(home,'filtered_backgrounds');
+% 
+% 
+% saveLoc = fullfile(home,'Backgrounds_not_used_by_florence_unique');
+% if ~exist(saveLoc)
+%     mkdir(saveLoc)
+% end
+% 
+% bgImgs   = lsDir(bgPath,{'jpg'});
+% filtImgs = lsDir(filtPath,{'png'});
+% 
+% 
+% filtNames = dir(fullfile(home,'filtered_backgrounds'));
+% filtNames = struct2cell(filtNames);
+% filtNames = filtNames(1,3:end);
+% 
+% key = '_';
+% imgNumbers = [];
+% 
+% for iFilt = 1:length(filtImgs)
+%     idx_key = strfind(filtNames{iFilt},key);
+%     imgNumber = filtNames{iFilt}(1:idx_key-1);
+%     imgNumber = str2double(imgNumber);
+%     imgNumbers(iFilt) = imgNumber;
+% 
+% end
+% imgNumbers = imgNumbers + 1;
+% imgNumbers = sort(imgNumbers);
+% 
+% % Now take only these imgNumber images from Jacob's original folder.
+% 
+% uniqueBgs = bgImgs(imgNumbers);
+% 
+% for iFlo = 1:length(uniqueBgs)
+%     [pathstr,name,ext] = fileparts(uniqueBgs{iFlo});
+%     copyfile(uniqueBgs{iFlo},fullfile(saveLoc,[name '.png']));
+% end
 %% Remove duplicate bgs from Jacob's database.
 
 % clear; clc; close all; dbstop if error;
@@ -149,55 +152,57 @@ end
 
 % Code will take each image, and find closest 3 images. 
 
-clear; clc;
-
-dbstop if error;
-
-if ispc
-    home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
-else
-    home = '/home/levan/HMAX/HumanaeFaces20170707_JGM';
-end
-% florencePath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_from_florence_not_in_jacobs_folder';
-% leftoverPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
-bgPath = fullfile(home,'Backgrounds_not_used_by_florence');
-
-saveLoc = fullfile(home,'duplicates');
-if ~exist(saveLoc)
-    mkdir(saveLoc)
-end
-
-bgImgs = lsDir(bgPath,{'jpg'});
-
-resScale = 0.15;
-
-leastError = zeros(length(bgImgs),length(bgImgs));
-
-for iBg = 1:length(bgImgs)
-    iBg
-
-    iImgOrig = imread(bgImgs{iBg});
-
-    parfor iComp = 1:length(bgImgs)
-%         iComp
-        iImgComp = imread(bgImgs{iComp});
-        
-        assert(isequal(size(iImgOrig),size(iImgComp)),'Image sizes differ');
-        
-%         diffImg = iImgOrig - iImgComp;
-        leastError(iBg,iComp) = immse(iImgOrig,iImgComp);
-    end
-    
-    [sortedError, Idx] = sort(leastError(iBg,:),'ascend');
-    
-    imwrite(imresize(iImgOrig,resScale),fullfile(saveLoc,[int2str(iBg-1) '_0.png'])); 
-    for iWrite = 1:4
-        imwrite(imresize(imread(bgImgs{Idx(iWrite)}),resScale),...
-                fullfile(saveLoc,[int2str(iBg-1) '_' int2str(iWrite) '.png']))
-    end
-end
-
-save(fullfile(saveLoc,'leastError'),'leastError');
+% clear; clc;
+% 
+% dbstop if error;
+% 
+% if ispc
+%     home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
+% else
+%     home = '/home/levan/HMAX/HumanaeFaces20170707_JGM';
+% end
+% % florencePath = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_from_florence_not_in_jacobs_folder';
+% % leftoverPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
+% bgPath = fullfile(home,'Backgrounds_not_used_by_florence');
+% floPath = fullfile(home,'Backgrounds_used_by_florence');
+% 
+% saveLoc = fullfile(home,'last_filt_step');
+% if ~exist(saveLoc)
+%     mkdir(saveLoc)
+% end
+% 
+% floImgs = lsDir(floPath,{'jpg'});
+% bgImgs = lsDir(bgPath,{'jpg'});
+% 
+% resScale = 0.15;
+% 
+% leastError = zeros(length(floImgs),length(bgImgs));
+% 
+% for iFlo = 1:length(floImgs)
+%     iFlo
+% 
+%     iImgOrig = imread(floImgs{iFlo});
+% 
+%     parfor iComp = 1:length(bgImgs)
+% %         iComp
+%         iImgComp = imread(bgImgs{iComp});
+%         
+%         assert(isequal(size(iImgOrig),size(iImgComp)),'Image sizes differ');
+%         
+% %         diffImg = iImgOrig - iImgComp;
+%         leastError(iFlo,iComp) = immse(iImgOrig,iImgComp);
+%     end
+%     
+%     [sortedError, Idx] = sort(leastError(iFlo,:),'ascend');
+%     
+%     imwrite(imresize(iImgOrig,resScale),fullfile(saveLoc,[int2str(iFlo-1) '_0.png'])); 
+%     for iWrite = 1:4
+%         imwrite(imresize(imread(bgImgs{Idx(iWrite)}),resScale),...
+%                 fullfile(saveLoc,[int2str(iFlo-1) '_' int2str(iWrite) '.png']))
+%     end
+% end
+% 
+% save(fullfile(saveLoc,'leastError'),'leastError');
 
 %% Find the left out background images in Jacob's database.
 % clear; clc;

@@ -8,10 +8,10 @@ function CUR_runAnnulusExpt2(locationFileToLoad, saveFolder, condition,...
 % Localization is off until its adjusted for various patchSizes. 
 
 % For quickie analysis, run this command:
-% CUR_runAnnulusExpt2('annulusExptFixedContrast/simulation2/set1/facesLoc.mat',...
-%                     'annulusExptFixedContrast/simulation2/set1/data/patchSet_1x2/lfwSingle50000',...
-%                     'annulusExptFixedContrast/simulation2/set1/',...
-%                     50000,12500,720,180,5,...
+% CUR_runAnnulusExpt2('annulusExptFixedContrast/simulation3/part1upright/facesLoc.mat',...
+%                     'annulusExptFixedContrast/simulation3/part1upright/sandbox/data/patchSet_3x2/lfwSingle50000',...
+%                     'annulusExptFixedContrast/simulation3/part1upright/',...
+%                     20,10,720,180,5,...
 %                     'patchSet_1x2')
 
 %creates c2 for images and saves the coordinates of the best locations and
@@ -22,8 +22,6 @@ function CUR_runAnnulusExpt2(locationFileToLoad, saveFolder, condition,...
 % nPatchesPerLoop - number of patches that will be run per loop through images.
 %                   Total of nPatchesAnalyzed/nPatchesPerLoop loops will be
 %                   run.
-
-
 
 % condition - serves as input to localization code. Specifies the path to
 %             exptDesign.mat file for the simulations. 
@@ -103,6 +101,8 @@ save(fullfile(saveLoc,'runParameters.mat'),...
     'saveLoc',...
     'loadLoc',...
     'patchesLoc',...
+    'startingPatchLoopIdx',...
+    'endingPatchLoopIdx',...
     'RESIZE',...
     'maxSize'...
     );
@@ -121,17 +121,18 @@ save(fullfile(saveLoc,'runParameters.mat'),...
 if mod(nImgsAnalyzed,nImgsPerLoop)~=0 || mod(nPatchesAnalyzed,nPatchesPerLoop)~=0
     input = 'loopping messed up'
 else
-    nImgLoops = nImgsAnalyzed/nImgsPerLoop;
+    nImgLoops   = nImgsAnalyzed/nImgsPerLoop;
     nPatchLoops = nPatchesAnalyzed/nPatchesPerLoop;
 end
 
 % Patch loop begin.
 for iPatchLoop = startingPatchLoopIdx:endingPatchLoopIdx
+    
     idxPatchStart = (iPatchLoop-1)*nPatchesPerLoop+1;
     idxPatchEnd   = (iPatchLoop)*nPatchesPerLoop;
     
-    patches{1} = ps.patches{1}(:,idxPatchStart:idxPatchEnd);
-    patchSizes = [ps.sizes(1:3,:); nPatchesPerLoop];
+    patches{1}    = ps.patches{1}(:,idxPatchStart:idxPatchEnd);
+    patchSizes    = [ps.sizes(1:3,:); nPatchesPerLoop];
 
 
         % Predifine to concatinate later.
@@ -154,8 +155,8 @@ for iPatchLoop = startingPatchLoopIdx:endingPatchLoopIdx
                 RESIZE, nImgsPerWorker);
             
             c2fPatchLoop       = [c2fPatchLoop c2f]; %#ok<*AGROW>
-            bestBands = horzcat(bestBands{:});
-            bestLoc   = horzcat(bestLoc{:});
+            bestBands          = horzcat(bestBands{:});
+            bestLoc            = horzcat(bestLoc{:});
             bestBandsPatchLoop = [bestBandsPatchLoop bestBands];
             bestLocPatchLoop   = [bestLocPatchLoop bestLoc];
             s2fPatchLoop       = [s2fPatchLoop s2f];

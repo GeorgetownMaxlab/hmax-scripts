@@ -1,53 +1,59 @@
+%% Add position angle variable to exptDesign files.
+clear; clc; dbstop if error;
+load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\training\exptDesign.mat')
+
+
+
 %% Reduce contrast of Jacob's bg images.
-
-clear; clc; close all;
-dbstop if error;
-
-if ispc
-    home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
-else
-    home = '/home/levan/HMAX/HumanaeFaces20170707_JGM';
-end
-
-% Get the range of stretchlim values of Florences images
-floPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
-floImgs = lsDir(floPath,{'jpg'});
-allValues = zeros(length(floImgs),2);
-
-for iImg = 1:length(floImgs)
-   img = imread(floImgs{iImg});
-   allValues(iImg,:) = stretchlim(img);
-
-end
-
-meanValues = mean(allValues,1);
-stdValues  = std(allValues);
-
-
-
-% Start adjusting Jacob's images.
-% For each of Jacob's image, randomly choose an image from Florence's
-% folder, and use the stretchlim values of that image for contrast
-% normalization.
-bgPath = fullfile(home,'Backgrounds_not_used_by_florence');
-bgImgs = lsDir(bgPath,{'jpg'});
-
-% refImg = imread('C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds\bgBazaar001.jpg');
-
-parfor iImg = 1:length(bgImgs)
-    idxRefImg = randi(100,1);
-    bgImg = imread(bgImgs{iImg});
-    
-%     bgImgAdj = stretch_histogram(bgImg,refImg);
-    bgImgAdj = imadjust(bgImg,stretchlim(bgImg),allValues(idxRefImg,:));
-    
-%     subplot(1,2,1)
-%     imshow(bgImg);
-%     subplot(1,2,2)
-%     imshow(bgImgAdj);
-    [pathstr,name,ext] = fileparts(bgImgs{iImg});
-    imwrite(bgImgAdj,fullfile(home,'Backgrounds_not_used_by_florence_unique_normalized',[name '.png']));
-end
+% 
+% clear; clc; close all;
+% dbstop if error;
+% 
+% if ispc
+%     home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
+% else
+%     home = '/home/levan/HMAX/HumanaeFaces20170707_JGM';
+% end
+% 
+% % Get the range of stretchlim values of Florences images
+% floPath = 'C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds';
+% floImgs = lsDir(floPath,{'jpg'});
+% allValues = zeros(length(floImgs),2);
+% 
+% for iImg = 1:length(floImgs)
+%    img = imread(floImgs{iImg});
+%    allValues(iImg,:) = stretchlim(img);
+% 
+% end
+% 
+% meanValues = mean(allValues,1);
+% stdValues  = std(allValues);
+% 
+% 
+% 
+% % Start adjusting Jacob's images.
+% % For each of Jacob's image, randomly choose an image from Florence's
+% % folder, and use the stretchlim values of that image for contrast
+% % normalization.
+% bgPath = fullfile(home,'Backgrounds_not_used_by_florence');
+% bgImgs = lsDir(bgPath,{'jpg'});
+% 
+% % refImg = imread('C:\Users\levan\HMAX\annulusExptFixedContrast\AllBackgrounds\bgBazaar001.jpg');
+% 
+% parfor iImg = 1:length(bgImgs)
+%     idxRefImg = randi(100,1);
+%     bgImg = imread(bgImgs{iImg});
+%     
+% %     bgImgAdj = stretch_histogram(bgImg,refImg);
+%     bgImgAdj = imadjust(bgImg,stretchlim(bgImg),allValues(idxRefImg,:));
+%     
+% %     subplot(1,2,1)
+% %     imshow(bgImg);
+% %     subplot(1,2,2)
+% %     imshow(bgImgAdj);
+%     [pathstr,name,ext] = fileparts(bgImgs{iImg});
+%     imwrite(bgImgAdj,fullfile(home,'Backgrounds_not_used_by_florence_unique_normalized',[name '.png']));
+% end
 
 %% Take only the unique images from Jacob's database.
 % clear; clc; close all; dbstop if error;

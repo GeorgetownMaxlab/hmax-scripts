@@ -92,8 +92,12 @@ angularDistPatchLoopDeg = zeros(nPatchesPerLoop,nImgsAnalyzed);
 % proceed.
 % Sort the facesLoc file using natural sorting. The output indices
 % should just be progression from 1 to the maximum number of images.
+
+% Edit: with the new images sets from Jacob, facesLoc isn't sorted. So I
+% commented out the assert line below. making imgFacesLoc equal to
+% idx_sorted_facesLoc should make everything ok.
 [~,idx_sorted_facesLoc] = sort_nat(facesLoc{1});
-assert(isequal(idx_sorted_facesLoc',1:size(facesLoc{1},1)),'getting imaged indices for localization are messed up');
+% assert(isequal(idx_sorted_facesLoc',1:size(facesLoc{1},1)),'getting imaged indices for localization are messed up');
 imgFacesLoc = idx_sorted_facesLoc;
 % sanityCheckPatchLoop.imgFacesLoc = imgFacesLoc;
 
@@ -149,7 +153,9 @@ for iPatch = 1:nPatchesPerLoop
             radius = 74; %1086*50/730=74.38
         elseif ySizeOrig == 1094
             radius = 75; %1094*50/730=74.93
-        else
+        elseif ySizeOrig == 600 % These are the dimensions from Jacob's image set.
+            radius = 41;
+        else%600*50/730
             error('Image size isn''t right')
         end
         
@@ -198,13 +204,14 @@ ctrCartY = ySizeOrig/2 - ctrRow; % Y coordinate
 
 % Get the polar angle of the center of the C2 location.
 [c2_loc_rad, ~] = cart2pol(ctrCartX,ctrCartY);
+
 face_loc_deg = exptDesign(imgFacesLoc(iImg)).positionAngle;
 face_loc_rad = deg2rad(face_loc_deg);
 
 % Check in radians
 dist_in_rad1 = abs(angleDiff(c2_loc_rad,face_loc_rad));
 dist_in_deg1 = rad2deg(dist_in_rad1);
-criterionInDeg = 45;
+criterionInDeg = 45; % I left this in the old code, even though this is wrong. I just wanted to compare the correct results with what would have been with the incorrect one. 
 criterionInRad = deg2rad(criterionInDeg);
 
 % Double check with another script
@@ -226,11 +233,11 @@ angularDistPatchLoopDeg(iPatch,iImg) = dist_in_deg1;
 end % iPatch loop
 
 %% Save variables
-save(fullfile(saveLoc,['angularDistRad_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),  'angularDistPatchLoopRad');
-save(fullfile(saveLoc,['angularDistDeg_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),  'angularDistPatchLoopDeg');
+save(fullfile(saveLoc,['angularDistRad_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'angularDistPatchLoopRad');
+save(fullfile(saveLoc,['angularDistDeg_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'angularDistPatchLoopDeg');
 
-save(fullfile(saveLoc,['imgHitsWedgeOld_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),  'imgHitsWedgePatchLoop');
-save(fullfile(saveLoc,['imgHitsFaceBox_' int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'imgHitsFaceBoxPatchLoop');
+save(fullfile(saveLoc,['imgHitsWedgeOld_'  int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'imgHitsWedgePatchLoop');
+save(fullfile(saveLoc,['imgHitsFaceBox_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'imgHitsFaceBoxPatchLoop');
 % save(fullfile(saveLoc,['sanityCheck_'    int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),   'sanityCheckPatchLoop');
 
 %% call the image difficulty code?
@@ -263,8 +270,9 @@ function visualize = visualizeLocations(ySizeOrig,xSizeOrig,imgScalingFactor,fac
               round(x2pOrig-((x2pOrig-x1pOrig)/2)+3)) = 128;
     
     % If want to see the patch in whole image.
+%     figure;
 %     subplot(1,2,1)
-    imshow(uint8(visualize))
+%     imshow(uint8(visualize))
 %     subplot(1,2,2)
 %     imshow(uint8(imread(annulusImgToShow)));
 
@@ -276,7 +284,7 @@ function visualize = visualizeLocations(ySizeOrig,xSizeOrig,imgScalingFactor,fac
 %     visualize = imresize(visualize,0.5); % Downsampled to save space.
 %     
 %     % Now visualize as HMAX saw it
-%     visualizeHMAX = resizeImage(double(imread(annulusImgToShow)),579);
+%     visualizeHMAX = resizeImage(double(imread(annulusImgToShow)),1067);
 %     faceBoxResized = round(faceBoxOrig/imgScalingFactor);
 %     visualizeHMAX = visualizeHMAX(faceBoxResized(3):faceBoxResized(4),faceBoxResized(1):faceBoxResized(2));
 %     subplot(2,1,2)

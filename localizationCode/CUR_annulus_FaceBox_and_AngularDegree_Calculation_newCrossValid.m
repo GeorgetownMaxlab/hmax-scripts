@@ -163,7 +163,7 @@ for iPatch = 1:nPatchesPerLoop
         x1   = x1 - cols_shift_topLeft;
         
         y2   = y1 + patchRows - 1;  % y2 is the ROW    coordinate of the bottom-right corner.
-        x2   = x1 + patchCols - 1; % x2 is the COLUMN coordinate of the bottom-right corner.
+        x2   = x1 + patchCols - 1;  % x2 is the COLUMN coordinate of the bottom-right corner.
         
         % Get pixel coordinates of the C1 representation
         [x1p, x2p, y1p, y2p] = patchDimensionsInPixelSpace(band, x1, x2, y1, y2, c1Scale, c1Space, rfSizes, double(xSizeResized), double(ySizeResized));

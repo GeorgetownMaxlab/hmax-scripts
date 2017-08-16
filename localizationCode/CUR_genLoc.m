@@ -1,6 +1,8 @@
 function CUR_genLoc(condition,nPatchesAnalyzed,nPatchesPerLoop,startingPatchLoopIdx)
 
 %% Global setup
+dbstop if error;
+
 if (nargin < 4)
     nPatchesAnalyzed     = 100;
     nPatchesPerLoop      = 10;
@@ -8,19 +10,25 @@ if (nargin < 4)
 end
 
 if (nargin < 1)
-    condition = 'annulusExptFixedContrast/simulation3/training/';
+    condition = 'annulusExptFixedContrast/simulation4/training/';
 end
 
 % nImgsAnalyzed        = 720;
-maxSize              = 579;
+maxSize              = 1067;
 splitID              = 'lfwSingle50000';
-tasks = {'patchSetAdam','patchSet_1x2','patchSet_2x1','patchSet_1x3','patchSet_3x1','patchSet_2x3','patchSet_3x2'};
-patchSizes = [2,1,2,1,3,2,3;...
-              2,2,1,3,1,3,2;...
-              4,4,4,4,4,4,4;...
-              nPatchesAnalyzed,nPatchesAnalyzed,nPatchesAnalyzed,...
-              nPatchesAnalyzed,nPatchesAnalyzed,nPatchesAnalyzed,...
+% tasks = {'patchSetAdam','patchSet_1x2','patchSet_2x1','patchSet_1x3','patchSet_3x1','patchSet_2x3','patchSet_3x2'};
+tasks = {'patchSet_3x2'};
+% patchSizes = [2,1,2,1,3,2,3;...
+%               2,2,1,3,1,3,2;...
+%               4,4,4,4,4,4,4;...
+%               nPatchesAnalyzed,nPatchesAnalyzed,nPatchesAnalyzed,...
+%               nPatchesAnalyzed,nPatchesAnalyzed,nPatchesAnalyzed,...
+%               nPatchesAnalyzed];
+patchSizes = [3;...
+              2;...
+              4;...
               nPatchesAnalyzed];
+
 wedgeInDeg = [90,45,30,20,15,10]; % This is the angle of the FULL wedge.
 
 if ~ispc
@@ -115,8 +123,8 @@ for iTask = 1:numel(tasks)
     
     %% Start Loop
     display(['Starting the parallel loop for ' tasks{iTask}]);
-    parfor iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
-%             display('Parfor is Off!!!!');
+    for iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
+            display('Parfor is Off!!!!');
         tic
         %     display(['Starting to run ' tasks{iTask}]);
         

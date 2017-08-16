@@ -56,7 +56,7 @@ for iTask = 1:numel(tasks)
     currentPatchSizes = patchSizes(:,iTask);
     
     % Load and transform facesLoc.mat file
-    load(fullfile(loadLoc,'facesLoc.mat')); %variable in workspace called 'facesLoc']
+    load(fullfile(loadLoc,'facesLoc.mat')); %variable in workspace called 'facesLoc'
     facesLoc = convertFacesLocAnnulusFixedContrast(facesLoc,ispc); %Convert the linux file paths to windows file paths, and vice-versa if needed.
     if ~exist('nImgsAnalyzed','var')
         nImgsAnalyzed = length(facesLoc{1});
@@ -115,7 +115,7 @@ for iTask = 1:numel(tasks)
     
     %% Start Loop
     display(['Starting the parallel loop for ' tasks{iTask}]);
-    parfor iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
+    parfor iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting from random patchLoopIdx is gonna be ok. So don't use it so far.
 %             display('Parfor is Off!!!!');
         tic
         %     display(['Starting to run ' tasks{iTask}]);

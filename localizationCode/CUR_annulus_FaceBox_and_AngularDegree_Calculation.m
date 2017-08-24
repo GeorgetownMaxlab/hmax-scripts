@@ -211,20 +211,27 @@ face_loc_rad = deg2rad(face_loc_deg);
 % Check in radians
 dist_in_rad1 = abs(angleDiff(c2_loc_rad,face_loc_rad));
 dist_in_deg1 = rad2deg(dist_in_rad1);
-criterionInDeg = 45; % I left this in the old code, even though this is wrong. I just wanted to compare the correct results with what would have been with the incorrect one. 
-criterionInRad = deg2rad(criterionInDeg);
 
-% Double check with another script
-dist_in_deg2 = angdiffdeg(rad2deg(c2_loc_rad),face_loc_deg);
-dist_in_rad2 = deg2rad(dist_in_deg2);
+% The code below was commented out. Using criterionInDeg = 45 was wrong and
+% I had kept it just in case. But with the random pasting location of the
+% faces in Jacob's backgrounds, angle calculation was giving me error. We
+% don't need angle distances for training the patches on Jacob's set of
+% images. We only need the facebox performance.
 
-if dist_in_rad1 < criterionInRad
-    assert(dist_in_deg2 < criterionInDeg,'The two ways of calculating the angles differ')
-    imgHitsWedgePatchLoop(iPatch,iImg) = 1;
-end
-if dist_in_deg2 < criterionInDeg
-    assert(imgHitsWedgePatchLoop(iPatch,iImg) == 1,'The two ways of calculating the angles differ')
-end
+% criterionInDeg = 45; % I left this in the old code, even though this is wrong. I just wanted to compare the correct results with what would have been with the incorrect one. 
+% criterionInRad = deg2rad(criterionInDeg);
+% 
+% % Double check with another script
+% dist_in_deg2 = angdiffdeg(rad2deg(c2_loc_rad),face_loc_deg);
+% dist_in_rad2 = deg2rad(dist_in_deg2);
+% 
+% if dist_in_rad1 < criterionInRad
+%     assert(dist_in_deg2 <= criterionInDeg,'The two ways of calculating the angles differ')
+%     imgHitsWedgePatchLoop(iPatch,iImg) = 1;
+% end
+% if dist_in_deg2 <= criterionInDeg
+%     assert(imgHitsWedgePatchLoop(iPatch,iImg) == 1,'The two ways of calculating the angles differ')
+% end
 
 angularDistPatchLoopRad(iPatch,iImg) = dist_in_rad1;
 angularDistPatchLoopDeg(iPatch,iImg) = dist_in_deg1;
@@ -236,7 +243,7 @@ end % iPatch loop
 save(fullfile(saveLoc,['angularDistRad_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'angularDistPatchLoopRad');
 save(fullfile(saveLoc,['angularDistDeg_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'angularDistPatchLoopDeg');
 
-save(fullfile(saveLoc,['imgHitsWedgeOld_'  int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'imgHitsWedgePatchLoop');
+% save(fullfile(saveLoc,['imgHitsWedgeOld_'  int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'imgHitsWedgePatchLoop');
 save(fullfile(saveLoc,['imgHitsFaceBox_'   int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),'imgHitsFaceBoxPatchLoop');
 % save(fullfile(saveLoc,['sanityCheck_'    int2str(idxPatchStart) '-' int2str(idxPatchEnd) '_allImages']),   'sanityCheckPatchLoop');
 

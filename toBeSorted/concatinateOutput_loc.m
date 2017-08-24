@@ -9,7 +9,7 @@ load(fullfile(loadLoc, ['angularDistRad_' int2str(rangeStr(1)) '-' int2str(range
 nImgs = size(angularDistPatchLoopRad,2);
 
 imgHitsFaceBox = zeros(nPatchesAnalyzed,nImgs);
-imgHitsWedge   = zeros(nPatchesAnalyzed,nImgs);
+% imgHitsWedge   = zeros(nPatchesAnalyzed,nImgs);
 angularDistRad = zeros(nPatchesAnalyzed,nImgs);
 angularDistDeg = zeros(nPatchesAnalyzed,nImgs);
 % sanityCheck    = [];
@@ -22,7 +22,7 @@ for iLoop = 1:length(rangeStr)-1
     load(fullfile(loadLoc, ['angularDistDeg_' int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']))
     
     load(fullfile(loadLoc, ['imgHitsFaceBox_' int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']))
-    load(fullfile(loadLoc, ['imgHitsWedgeOld_'   int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']))
+%     load(fullfile(loadLoc, ['imgHitsWedgeOld_'   int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']))
     %     load(fullfile(loadLoc, ['sanityCheck_'    int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']))
     %     load(fullfile(loadLoc, ['runTime_'        int2str(rangeStr(i)) '-' int2str(rangeStr(i+1)-1) '_allImages.mat']))
     
@@ -33,7 +33,7 @@ for iLoop = 1:length(rangeStr)-1
     %     angularDistRad = [angularDistRad; angularDistPatchLoopRad];
     %     angularDistDeg = [angularDistDeg; angularDistPatchLoopDeg];
     imgHitsFaceBox(rangeStr(iLoop):(rangeStr(iLoop+1)-1),:) = imgHitsFaceBoxPatchLoop;
-    imgHitsWedge  (rangeStr(iLoop):(rangeStr(iLoop+1)-1),:) = imgHitsWedgePatchLoop;
+%     imgHitsWedge  (rangeStr(iLoop):(rangeStr(iLoop+1)-1),:) = imgHitsWedgePatchLoop;
     angularDistRad(rangeStr(iLoop):(rangeStr(iLoop+1)-1),:) = angularDistPatchLoopRad;
     angularDistDeg(rangeStr(iLoop):(rangeStr(iLoop+1)-1),:) = angularDistPatchLoopDeg;
     
@@ -41,14 +41,13 @@ for iLoop = 1:length(rangeStr)-1
     
     % Now delete the segmented variables to avoid clutter.
     delete(fullfile(loadLoc, ['imgHitsFaceBox_' int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']),...
-        fullfile(loadLoc, ['imgHitsWedgeOld_'   int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']),...
         fullfile(loadLoc, ['angularDistRad_'   int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']),...
         fullfile(loadLoc, ['angularDistDeg_'   int2str(rangeStr(iLoop)) '-' int2str(rangeStr(iLoop+1)-1) '_allImages.mat']));
 end
 
 %% Save final variables
 save(fullfile(loadLoc,'imgHitsFaceBox'), 'imgHitsFaceBox');
-save(fullfile(loadLoc,'imgHitsWedgeOld'),'imgHitsWedge');
+% save(fullfile(loadLoc,'imgHitsWedgeOld'),'imgHitsWedge');
 save(fullfile(loadLoc,'angularDistRad'), 'angularDistRad');
 % save(fullfile(loadLoc,'angularDistDeg'), 'angularDistDeg');
 

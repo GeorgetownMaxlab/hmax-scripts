@@ -1,11 +1,14 @@
 function CUR_genLoc(condition,nPatchesAnalyzed,nPatchesPerLoop,startingPatchLoopIdx)
 
+% This script allows to break up localization code and parallelize
+% computation. It parallelizes on the patches.
+
 %% Global setup
 dbstop if error;
 
 if (nargin < 4)
-    nPatchesAnalyzed     = 100;
-    nPatchesPerLoop      = 10;
+    nPatchesAnalyzed     = 50000;
+    nPatchesPerLoop      = 2000;
     startingPatchLoopIdx = 1;
 end
 
@@ -44,12 +47,14 @@ for iTask = 1:numel(tasks)
     else
         home = '/home/levan/HMAX';
     end
-    saveLoc   = fullfile(home,condition,'data',tasks{iTask},splitID,'fixedLocalization','sandbox');
+    saveLoc   = fullfile(home,condition,'data',tasks{iTask},splitID,'fixedLocalization');
     loadLoc   = fullfile(home,condition,'data',tasks{iTask},splitID);
     
     if ~exist(saveLoc)
         mkdir(saveLoc)
     end
+    
+    diary(fullfile(saveLoc,'diary.mat'));
     
     mkdir(fullfile(saveLoc,'responseOverlays','hits'));
     mkdir(fullfile(saveLoc,'responseOverlays','misses'));     

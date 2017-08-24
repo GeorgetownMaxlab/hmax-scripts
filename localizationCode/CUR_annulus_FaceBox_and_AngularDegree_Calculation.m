@@ -14,6 +14,8 @@ function CUR_annulus_FaceBox_and_AngularDegree_Calculation(...
                     quadType)
 
 % This script is adjusted to perform localization for any size of patches.
+% It also supports starting the localization calculation from an arbitrary
+% index of patches.
 
                 
 %% Define global variables and load files.
@@ -46,7 +48,8 @@ load(fullfile(loadLoc, ['bestLocC2'   quadType])); %variable in workspace called
 load(fullfile(loadLoc, ['bestBandsC2' quadType])); %variable in workspace called 'bestBands'
 
 %% ADJUST THE BEST LOC VALUES BASED ON RESIZING DONE AT C2 CALCULATION
-% 
+% The code below was taken out to the parent code CUR_genLoc.m
+
 % % ySizeOrig and xSizeOrig are dimensions of images that were presented to
 % % subjects during psychophysical experiments. All the face-location data
 % % given by Florence is relative to these dimensions. 
@@ -93,11 +96,8 @@ angularDistPatchLoopDeg = zeros(nPatchesPerLoop,nImgsAnalyzed);
 % Sort the facesLoc file using natural sorting. The output indices
 % should just be progression from 1 to the maximum number of images.
 
-% Edit: with the new images sets from Jacob, facesLoc isn't sorted. So I
-% commented out the assert line below. making imgFacesLoc equal to
-% idx_sorted_facesLoc should make everything ok.
 [~,idx_sorted_facesLoc] = sort_nat(facesLoc{1});
-% assert(isequal(idx_sorted_facesLoc',1:size(facesLoc{1},1)),'getting imaged indices for localization are messed up');
+assert(isequal(idx_sorted_facesLoc',1:size(facesLoc{1},1)),'getting imaged indices for localization are messed up');
 imgFacesLoc = idx_sorted_facesLoc;
 % sanityCheckPatchLoop.imgFacesLoc = imgFacesLoc;
 
@@ -174,17 +174,17 @@ for iPatch = 1:nPatchesPerLoop
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 % Draw images for visualizing everything.
-annulusImgToShow = facesLoc{1}{iImg};
-visualize = visualizeLocations(ySizeOrig,xSizeOrig,scalingFactors(iImg),faceBoxOrig,x1p,x2p,y1p,y2p,annulusImgToShow);
-sanityCheckPatchLoop.visualizePositions{iPatch,iImg} = visualize;
+% annulusImgToShow = facesLoc{1}{iImg};
+% visualize = visualizeLocations(ySizeOrig,xSizeOrig,scalingFactors(iImg),faceBoxOrig,x1p,x2p,y1p,y2p,annulusImgToShow);
+% sanityCheckPatchLoop.visualizePositions{iPatch,iImg} = visualize;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
     if y2p > faceBoxResized(3) && y1p < faceBoxResized(4) && x1p < faceBoxResized(2) && x2p > faceBoxResized(1) 
        %if best match is within where the face is.
         imgHitsFaceBoxPatchLoop(iPatch,iImg) = 1;
-        imwrite(uint8(visualize),fullfile(saveLoc,['responseOverlays/hits/patch'   int2str(iPatch) '_face' int2str(iImg) '.png']));
+%         imwrite(uint8(visualize),fullfile(saveLoc,['responseOverlays/hits/patch'   int2str(iPatch) '_face' int2str(iImg) '.png']));
     else
-        imwrite(uint8(visualize),fullfile(saveLoc,['responseOverlays/misses/patch' int2str(iPatch) '_face' int2str(iImg) '.png']));
+%         imwrite(uint8(visualize),fullfile(saveLoc,['responseOverlays/misses/patch' int2str(iPatch) '_face' int2str(iImg) '.png']));
     end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% NOW CHECK THE WEDGE LOCALIZATION 
@@ -269,6 +269,9 @@ function visualize = visualizeLocations(ySizeOrig,xSizeOrig,imgScalingFactor,fac
               round(x1pOrig+((x2pOrig-x1pOrig)/2)-3):...
               round(x2pOrig-((x2pOrig-x1pOrig)/2)+3)) = 128;
     
+    % Reduce the dimensions of visualize so it doesn't take much space.
+    visualize = imresize(visualize,0.3);
+          
     % If want to see the patch in whole image.
 %     figure;
 %     subplot(1,2,1)

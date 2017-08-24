@@ -123,8 +123,8 @@ for iTask = 1:numel(tasks)
     
     %% Start Loop
     display(['Starting the parallel loop for ' tasks{iTask}]);
-    for iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
-            display('Parfor is Off!!!!');
+    parfor iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
+%             display('Parfor is Off!!!!');
         tic
         %     display(['Starting to run ' tasks{iTask}]);
         

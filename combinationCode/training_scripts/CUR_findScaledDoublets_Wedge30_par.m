@@ -6,6 +6,9 @@ function CUR_findScaledDoublets_Wedge30_par(...
         saveLoc,...
         loadLoc)
 
+% This script is called by CUR_genDoublets_norep.m. The two scripts allow
+% parallelization of finding doublets.
+    
     
 if ~exist(saveLoc,'dir')
     mkdir(saveLoc)
@@ -15,10 +18,10 @@ idxTPatchStart = (iPatchLoop-1)*nTPatchesPerLoop+1;
 idxTPatchEnd   = (iPatchLoop)  *nTPatchesPerLoop;
 
 % display('Loading the c2 related files...')
-load(fullfile(loadLoc,'patchPerformanceInfo_Wedge_30.mat'));
-load(fullfile(loadLoc,'imgHitsWedge.mat'));
+load(fullfile(loadLoc,'fixedLocalization','patchPerformanceInfo_Wedge_30.mat'));
+load(fullfile(loadLoc,'fixedLocalization','imgHitsWedge.mat'));
 load(fullfile(loadLoc,'c2f.mat'),'c2f');
-% display('Done loading c2 related files...')
+display('Done loading c2 related files...')
 imgHitsWedge = imgHitsWedge.wedgeDegree_30;
 nImgs = size(c2f,2);
 
@@ -30,7 +33,7 @@ idx_for_combMatrix = 1; % since iTPatch will depend on the iPatchLoop, whereas
 % indicated where in the combMatrix the data from the iTPatch loop goes.
 
 for iTPatch = idxTPatchStart:idxTPatchEnd
-%     idx_for_combMatrix
+    idx_for_combMatrix
     
     % Preprocessing
     idxTopPatch = idx_best_patches(iTPatch);
@@ -73,7 +76,7 @@ for iTPatch = idxTPatchStart:idxTPatchEnd
     bestSF     = zeros(1,nCPatches); % preallocate
     
     for iCPatch = 1:nCPatches
-        %     iCPatch
+%             iCPatch
         idx_iCPatch = CPInfo.idxPatches(iCPatch);
         newC2 = [c2f(idxTopPatch,:); c2f(idx_iCPatch,:)];
         newimgHitsWedge = [imgHitsWedge(idxTopPatch,:); imgHitsWedge(idx_iCPatch,:)];

@@ -15,6 +15,8 @@ function CUR_patchImageExtraction(patchesFolder, saveFolder, patchIndices, patch
 %topPatchesInfo.imgList: list of where the original image can be found
 
 %% Define global variables
+dbstop if error;
+
 if(nargin < 9)  ext = 'bmp'; end;
 if(nargin < 8)  rfSizes = 7:2:39; end;
 if(nargin < 7)  c1Space = 8:2:22; end;
@@ -42,7 +44,7 @@ end
 
 %% finds coordinates of patch in pixel space in [xmin, ymin, width, height] format
 coordinates = cell(1,length(patchIndices)); % predefine for speed
-parfor iPatch = 1:length(patchIndices)
+for iPatch = 1:length(patchIndices)
     iPatch
 	img = uint8(resizeImage(double(imread(sourceImages{patches.imgs(patchIndices(iPatch))})), imgResize));
 	xSize = size(img, 2);

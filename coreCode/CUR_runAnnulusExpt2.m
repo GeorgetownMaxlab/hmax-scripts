@@ -43,8 +43,8 @@ gaborSpecs.receptiveFieldSizes = 7:2:39; %how big the filters are
 gaborSpecs.div = 4:-.05:3.2; %frequency tuning of sinusoids 
   
 if (nargin < 13)
-    maxSize = 579;
-    RESIZE = 1;
+    maxSize = 1067;
+    RESIZE = 0;
 end
 if (nargin < 12)
     keepS2 = 0;
@@ -93,6 +93,14 @@ seedNum = 1234;
 rng(seedNum, 'twister');
 save(fullfile(saveLoc,'randomseed'), 'seedNum');
 diary(fullfile(saveLoc,'diary.mat'));
+
+if exist(startingPatchLoopIdx) ~= 1
+    startingPatchLoopIdx = 1;
+end
+if exist(endingPatchLoopIdx) ~= 1
+    endingPatchLoopIdx = nPatchesAnalyzed/nPatchesPerLoop;
+end
+
 
 % Load face images
 load(fullfile(loadLoc,locationFileToLoad));

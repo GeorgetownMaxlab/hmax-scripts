@@ -4,41 +4,45 @@ function CUR_genDoublets_norep(nPatchesAnalyzed,nTPatches,nTPatchesPerLoop,nCPat
 % TPatch and CPatch when looking for doublets. So a doublet with TPatch and
 % CPatch indices of (1,100) and (100,1) are cosidered as same and one is skipped. 
 
+% Script calls CUR_findScaledDoublets_Wedge30_par.m 
+
 %% GLOBAL STUFF
 % clear; clc;
 dbstop if error;
 mainStartTime = tic;
 
 if (nargin < 5)
-    condition = 'training4';
+    condition = 'training';
 end
 
-acrossCombination = 'acrossPatchTypes';
+acrossCombination = 'patchSet_3x2';
 combination_type  = 'find_CPatches';
 
 if (nargin < 1)
-    nPatchesAnalyzed = 80000;
-    nTPatches        = 1000;
-    nTPatchesPerLoop = 50;
-    nCPatches        = 1000;
+    nPatchesAnalyzed = 25000;
+    nTPatches        = 10;
+    nTPatchesPerLoop = 10;
+    nCPatches        = 10;
 end
 
 runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
 
 if ispc
-    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation3';
+    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4';
 else
-    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation3';
+    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation4';
 end
 
-loadLoc = fullfile(home,condition,'data',acrossCombination,'lfwSingle50000','fixedLocalization');
+loadLoc = fullfile(home,condition,'data',acrossCombination,'lfwSingle50000');
 saveLoc = fullfile(home,condition,'data',acrossCombination,'lfwSingle50000','combinations',combination_type,'doublets',...
                    [int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches']...
                    );
-
+               
 if ~exist(saveLoc,'dir')
     mkdir(saveLoc)
 end
+
+diary(fullfile(saveLoc,'diary.mat'));
 
 if mod(nTPatches,nTPatchesPerLoop)~=0
     input = 'loopping messed up'; %#ok<*NASGU>
@@ -53,7 +57,7 @@ end
 %% Start parfor loop
 display('starting parfor loop')
 
-parfor iPatchLoop = 1:nTPatchLoops
+for iPatchLoop = 1:nTPatchLoops
 %     display('Parfor is off!!!!');
 %     iPatchLoop
     CUR_findScaledDoublets_Wedge30_par(...
@@ -84,6 +88,7 @@ end
 [~,ia,~] = unique(indices,'rows');
 combMatrix = combMatrix(ia,:);
 save(fullfile(saveLoc,'combMatrix.mat'),'combMatrix');
+save(fullfile(saveLoc,'key.mat'),'key');
 
 %% Save parameters and other variables.
 display('Starting to save other variables');

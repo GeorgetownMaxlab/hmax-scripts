@@ -35,6 +35,7 @@ patchSizes = [3;...
 wedgeInDeg = [90,45,30,20,15,10]; % This is the angle of the FULL wedge.
 
 if ~ispc
+    delete(gcp)
     parpool(25)
 end
 

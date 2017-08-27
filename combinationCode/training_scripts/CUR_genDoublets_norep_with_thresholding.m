@@ -4,6 +4,10 @@ function CUR_genDoublets_norep_with_thresholding(nPatchesAnalyzed,nTPatches,nTPa
 % TPatch and CPatch when looking for doublets. So a doublet with TPatch and
 % CPatch indices of (1,100) and (100,1) are not both recorded. 
 
+% This script additionally uses a performance threshold for choosing the
+% complementary patches, so that none of the patches below that threshold
+% are considered for doublets.
+
 %% GLOBAL STUFF
 % clear; clc;
 dbstop if error;

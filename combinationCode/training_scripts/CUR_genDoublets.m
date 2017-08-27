@@ -1,5 +1,11 @@
 function CUR_genDoublets(nPatchesAnalyzed,nTPatches,nTPatchesPerLoop,nCPatches,condition)
 
+% This script implements parallelization of creation of doublets, by
+% parallelizing the Top patch loop. 
+
+% It calls CUR_findScaledDoublets_Wedge30_par.m code to implement each loop
+% of the top patches.
+
 %% GLOBAL STUFF
 % clear; clc;
 dbstop if error;

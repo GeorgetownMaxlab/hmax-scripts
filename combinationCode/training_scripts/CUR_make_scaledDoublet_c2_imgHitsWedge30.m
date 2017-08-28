@@ -10,7 +10,7 @@ dbstop if error;
 runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
 
 % Load the singles matrices.
-load(fullfile(loadLoc,'fixedLocalization',imgHitsWedge.mat'));
+load(fullfile(loadLoc,'fixedLocalization','imgHitsWedge.mat'));
 load(fullfile(loadLoc,'c2f.mat'));
 nImgs = size(c2f,2);
 imgHitsWedge = imgHitsWedge.wedgeDegree_30;

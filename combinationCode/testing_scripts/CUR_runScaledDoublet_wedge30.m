@@ -1,4 +1,4 @@
-function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,combination_type,CPatchThreshold)
+function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,combination_type)
 % run on the other set. 
 % NOTE: this script will works with the new combined data across
 % patch-types, and uses the 30-degree wedge data.
@@ -6,28 +6,32 @@ function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,combination_type,CPatc
 % clear; clc;
 dbstop if error;
 
-if (nargin < 4)
-    CPatchThreshold = 20;
-end
+% if exist(CPatchThreshold) == 1 % in case we are using the thresholding strategy.
+%     CPatchThreshold = 20;
+%     combination_type = fullfile('find_CPatches_thresholding',['CPatchThreshold_' int2str(CPatchThreshold)]);
+% else
+%     CPatchThreshold = [];
+% end
+
 if (nargin < 3)
-%     combination_type = 'find_CPatches';
-    combination_type = fullfile('find_CPatches_thresholding',['CPatchThreshold_' int2str(CPatchThreshold)]);
+    combination_type = 'find_CPatches';
 end
+
 if (nargin < 1)  
     nTPatches = 1000;
-    nCPatches = 948;
+    nCPatches = 100;
 end
 
 if ispc
-    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation3';
+    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast';
 else
-    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation3';
+    home = '/home/levan/HMAX/annulusExptFixedContrast';
 end
-conditionLoad_testing = 'testing';
-conditionLoad_training = 'training';
-conditionSplit = 'acrossPatchTypes';
+conditionLoad_testing  = fullfile('simulation3','part1upright');
+conditionLoad_training = fullfile('simulation4','training');
+conditionSplit = 'patchSet_3x2';
 
-loadLoc_singles        = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000','fixedLocalization');
+loadLoc_singles        = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000');
 saveLoc                = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000','combinations',...
                                   combination_type,'doublets',...
                                  [int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches']);
@@ -40,14 +44,13 @@ if ~exist(saveLoc,'dir')
     mkdir(saveLoc)
 end
 
-
 runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
 
 load(fullfile(combMatrixLoc_doublets,'combMatrix'));
 save(fullfile(saveLoc,'combMatrix_Source'),'combMatrix');
 c2f_testing_singles = load(fullfile(loadLoc_singles,'c2f')); % the variable name says "testing" but its actually c2 file for training set. See above description.
 c2f_testing_singles = c2f_testing_singles.c2f;
-imgHitsWedge_testing_singles = load(fullfile(loadLoc_singles,'imgHitsWedge'));
+imgHitsWedge_testing_singles = load(fullfile(loadLoc_singles,'fixedLocalization','imgHitsWedge'));
 imgHitsWedge_testing_singles = imgHitsWedge_testing_singles.imgHitsWedge;
 imgHitsWedge_testing_singles = imgHitsWedge_testing_singles.wedgeDegree_30;
 nImgs = size(c2f_testing_singles,2);

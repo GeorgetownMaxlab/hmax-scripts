@@ -1,5 +1,6 @@
 % Create mask for the backgrounds
 %% 7 september 2015
+clear; clc; dbstop if error;
 %% White annulus on black image-- between radius 6degs/8degs
 
 
@@ -54,29 +55,48 @@
 load('C:\Users\levan\HMAX\annulusExptFixedContrast\creatingAnnulizedImages\allVars.mat')
 
 %% Mask each background through this annulus and save the results in a folder with the backgrounds used in this experiment
+bg_loc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\Backgrounds_not_used_by_florence_unique_normalized\';
+saveLoc = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\control_v2\annulizedImages_730x927';
 indeximage=1;    
-[nomDir, NomFichierMat] = LookForFiles('C:\Users\levan\HMAX\annulusExptFixedContrast\backgroundsToBeUsed/');% liste tous les
+% [nomDir, NomFichierMat] = LookForFiles('C:\Users\levan\HMAX\annulusExptFixedContrast\background_images_and_contrast_evaluation\backgroundsToBeUsed/');% liste tous les
+% [nomDir, NomFichierMat] = LookForFiles(bg_loc);% liste tous les
+load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\crossValidInfo.mat')
+NomFichierMat = crossValidInfo.testingBgs;
+
     NomFichier_bg = sort(NomFichierMat);
     Mat_black = double(Mat_black)./255;
-    for i_bg = 1:length(NomFichier_bg)
-        nomf = strcat('C:\Users\levan\HMAX\annulusExptFixedContrast\backgroundsToBeUsed/',NomFichier_bg{i_bg});
-        eval(['imread ' nomf]);
+    parfor i_bg = 1:length(NomFichier_bg)
+%         nomf = strcat(bg_loc,NomFichier_bg{i_bg});
+        nomf = NomFichier_bg{i_bg};
+%         eval(['imread ' nomf]);
+        imread(nomf); % changed by Levan
         bgtomask = ans;
-        bgtomask = imresize(bgtomask,[730,927]);%% added in MAy2016, I dont know how it was working before, but here, since the backgrounds are 600*800 it is not suited to the annulus made for images of 730 * 927 which is the
+        bgtomask = imresize(bgtomask,[730,927]);%% added in May2016, I dont 
+        % know how it was working before, but here, since the backgrounds 
+        % are 600*800 it is not suited to the annulus made for images of 
+        % 730 * 927 which is the
         % size of the images displayed on the screen to avoid any resizing
         % that would change the shape of the annulus
         bgtomask = double(bgtomask)./255;
         new_im = Mat_black .* bgtomask;
         %% Replace pixels black and not in the annulus, so not of the background by gray color
         To_replace = setdiff(MatAll,coords_annulus,'rows');
-        for index_i=1:size(To_replace,1)
+        for index_i = 1:size(To_replace,1)
             new_im(To_replace(index_i,1),To_replace(index_i,2)) = 128/255;
         end
-
+        
+        % 2017.09.07 resize the final image for HMAX. We are generating a
+        % new set of images, with Florence's original faces but Jacob's
+        % bgs. Just wanna see how HMAX does on that.
+%         maxSize = 579;
+%         new_im = resizeImage(new_im,maxSize);
      
-        nomtosave = strcat('BackgroundsMay2016/',num2str(indeximage),'.png');
-        saveimage(new_im,nomtosave);
-        indeximage=indeximage+1;
+%         nomtosave = strcat('BackgroundsMay2016/',num2str(indeximage),'.png');
+        [pathstr,name,ext] = fileparts(NomFichier_bg{i_bg});
+        nomtosave = fullfile(saveLoc,[name ext]);
+%         saveimage(new_im,nomtosave);
+        imwrite(new_im,nomtosave);
+        indeximage = indeximage + 1;
     end
 
     

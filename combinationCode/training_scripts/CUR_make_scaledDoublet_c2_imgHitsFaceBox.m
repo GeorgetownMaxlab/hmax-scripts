@@ -9,40 +9,20 @@ function CUR_make_scaledDoublet_c2_imgHitsFaceBox(loadLoc,saveLoc,nTPatches,nCPa
 dbstop if error;
 runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
 
-if (nargin < 1)
-    loadFolder = 'trainingRuns/patchSetAdam/lfwSingle50000';
-    nTPatches = 400;
-    nCPatches = 1000;
-    pushValue = 0.001;
-    saveFolder = ['trainingRuns/patchSetAdam/lfwSingle50000/scaling_FaceBox/' int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches/'];
-
-    if ispc == 1
-        loadLoc    = ['C:\Users\Levan\HMAX\annulusExpt\' loadFolder '\'];
-        saveLoc    = ['C:\Users\Levan\HMAX\annulusExpt\' saveFolder '\'];
-    else    
-        loadLoc    = ['/home/levan/HMAX/annulusExpt/' loadFolder '/'];
-        saveLoc    = ['/home/levan/HMAX/annulusExpt/' saveFolder '/'];
-    end
-
-    if ~exist(saveLoc,'dir')
-        mkdir(saveLoc)
-    end
-end
-
 % Load the singles matrices.
-load([loadLoc 'imgHitsFaceBox.mat']);
-load([loadLoc 'c2f.mat']);
+load(fullfile(loadLoc,'fixedLocalization','imgHitsFaceBox.mat'));
+load(fullfile(loadLoc,'c2f.mat'));
 nImgs = size(c2f,2);
 
 % Load the combMatrix of the scaled doublets.
-load([saveLoc '/combMatrix'])
+load(fullfile(saveLoc,'combMatrix'))
 % load([loadLoc '/scaling_FaceBox/' int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches/runParameters'],'pushValues')
 
 
 %% START BUILDING THE NEW c2f and ImgHits MATRICES
-nDoublets             = nTPatches*nCPatches;
+nDoublets             = size(combMatrix,1);%nTPatches*nCPatches;
 doubletC2             = zeros(nDoublets,nImgs);
-doubletImgHitsFaceBox   = zeros(nDoublets,nImgs);
+doubletimgHitsFaceBox   = zeros(nDoublets,nImgs);
 doubletChosenPatchIdx = zeros(nDoublets,nImgs); 
 
 for iDoublet = 1:nDoublets
@@ -64,14 +44,14 @@ for iDoublet = 1:nDoublets
             [newC2_Scaled_min(1,:),chosenPatchIdx(1,:)] = min(newC2_Scaled,[],1);
             doubletC2(iDoublet,:)                       = newC2_Scaled_min;
             doubletChosenPatchIdx(iDoublet,:)           = chosenPatchIdx;
-            newImgHitsFaceBox                             = [imgHitsFaceBox(idxTPatch,:); ...
+            newimgHitsFaceBox                           = [imgHitsFaceBox(idxTPatch,:); ...
                                                            imgHitsFaceBox(idxCPatch,:)];
 
         for iImg = 1:nImgs
-            doubletImgHitsFaceBox(iDoublet,iImg) = newImgHitsFaceBox(chosenPatchIdx(1,iImg),iImg);
+            doubletimgHitsFaceBox(iDoublet,iImg) = newimgHitsFaceBox(chosenPatchIdx(1,iImg),iImg);
         end
 
-    newLoc(iDoublet,1) = nnz(doubletImgHitsFaceBox(iDoublet,:));
+    newLoc(iDoublet,1) = nnz(doubletimgHitsFaceBox(iDoublet,:));
     
     % clear variables.
     chosenPatchIdx   = [];
@@ -84,13 +64,13 @@ assert(isequal(newLoc,combMatrix(:,4))==1);
 %% save C2 and imgHits
 c2f = doubletC2;
 doubletC2 = [];
-imgHitsFaceBox = doubletImgHitsFaceBox;
-doubletImgHitsFaceBox = [];
+imgHitsFaceBox = doubletimgHitsFaceBox;
+doubletimgHitsFaceBox = [];
 chosenPatchIdx = doubletChosenPatchIdx;
 doubletChosenPatchIdx = [];
 display('saving data...');
-save([saveLoc 'c2f'],'c2f','-v7.3');
-save([saveLoc 'imgHitsFaceBox'],'imgHitsFaceBox','-v7.3');
-save([saveLoc 'chosenPatchIdx'],'chosenPatchIdx','-v7.3');
+save(fullfile(saveLoc,'c2f'),'c2f','-v7.3');
+save(fullfile(saveLoc,'imgHitsFaceBox'),'imgHitsFaceBox','-v7.3');
+save(fullfile(saveLoc,'chosenPatchIdx'),'chosenPatchIdx','-v7.3');
 
 

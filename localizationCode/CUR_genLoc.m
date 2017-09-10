@@ -8,16 +8,16 @@ dbstop if error;
 
 if (nargin < 4)
     nPatchesAnalyzed     = 50000;
-    nPatchesPerLoop      = 2000;
+    nPatchesPerLoop      = 2500;
     startingPatchLoopIdx = 1;
 end
 
 if (nargin < 1)
-    condition = 'annulusExptFixedContrast/simulation4/training/';
+    condition = 'annulusExptFixedContrast/simulation4/control_v2/';
 end
 
 % nImgsAnalyzed        = 720;
-maxSize              = 1067;
+maxSize              = 579;
 splitID              = 'lfwSingle50000';
 % tasks = {'patchSetAdam','patchSet_1x2','patchSet_2x1','patchSet_1x3','patchSet_3x1','patchSet_2x3','patchSet_3x2'};
 tasks = {'patchSet_3x2'};
@@ -35,7 +35,9 @@ patchSizes = [3;...
 wedgeInDeg = [90,45,30,20,15,10]; % This is the angle of the FULL wedge.
 
 if ~ispc
-    delete(gcp)
+    if ~isempty(gcp('nocreate'))
+        delete(gcp)
+    end
     parpool(25)
 end
 
@@ -129,8 +131,8 @@ for iTask = 1:numel(tasks)
     
     %% Start Loop
     display(['Starting the parallel loop for ' tasks{iTask}]);
-    parfor iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
-%             display('Parfor is Off!!!!');
+    for iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
+            display('Parfor is Off!!!!');
         tic
         %     display(['Starting to run ' tasks{iTask}]);
         

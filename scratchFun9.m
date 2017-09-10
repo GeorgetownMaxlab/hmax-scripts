@@ -187,70 +187,70 @@
 %        '45 degree line');                
 
 %% DOUBLETS plot the best patches, with patches showing up/inv preferences overlaid.
-% clear; clc;
-% figure
-% load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation1\testing\data\patchSetAdam\lfwSingle50000\scaling_FaceBox\bestPatches.mat')
-% 
-% % Plot lines for average subject performance on UPRIGHT
-% scalePlot = 65;
-% upHumanMean = 58.88;
-% upHumanSEM  = 0.04; % 4% SEM
-% 
-% upHumanMeanplot = ones(1,scalePlot)*upHumanMean;
-% upHumanSEMplot = upHumanMeanplot*upHumanSEM;
-% boundedline(1:scalePlot,upHumanMeanplot,upHumanSEMplot,'-g');
-% hold on;
-% 
-% % Plot lines for average subject performance on INVERTED
-% upHumanMean = 55.1;
-% upHumanSEM  = 0.04; % 4% SEM
-% 
-% upHumanMeanplot = ones(1,scalePlot)*upHumanMean;
-% upHumanSEMplot = upHumanMeanplot*upHumanSEM;
-% boundedline(upHumanMeanplot,1:scalePlot,upHumanSEMplot,'-b','orientation', 'horiz');
-% hold on;
-% 
-% % Plot all in blue. Blue will represent neutral patches because up and inv
-% % prefering ones will be plotted on top of all patches.
-% scatter(bestDoublets.doublets_inverted,bestDoublets.doublets_upright,...
+clear; clc;
+figure
+load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\testing\data\patchSet_3x2\lfwSingle50000\scaling_FaceBox\bestPatches.mat')
+
+% Plot lines for average subject performance on UPRIGHT
+scalePlot = 65;
+upHumanMean = 58.88;
+upHumanSEM  = 0.04; % 4% SEM
+
+upHumanMeanplot = ones(1,scalePlot)*upHumanMean;
+upHumanSEMplot = upHumanMeanplot*upHumanSEM;
+boundedline(1:scalePlot,upHumanMeanplot,upHumanSEMplot,'-g');
+hold on;
+
+% Plot lines for average subject performance on INVERTED
+upHumanMean = 55.1;
+upHumanSEM  = 0.04; % 4% SEM
+
+upHumanMeanplot = ones(1,scalePlot)*upHumanMean;
+upHumanSEMplot = upHumanMeanplot*upHumanSEM;
+boundedline(upHumanMeanplot,1:scalePlot,upHumanSEMplot,'-b','orientation', 'horiz');
+hold on;
+
+% Plot all in blue. Blue will represent neutral patches because up and inv
+% prefering ones will be plotted on top of all patches.
+scatter(bestDoublets.doublets_inverted,bestDoublets.doublets_upright,...
+        20,'MarkerEdgeColor','k',...
+           'MarkerFaceColor','b'...
+        )
+xlabel('Inverted Localization')
+ylabel('Upright Localization')
+title({['Best ' int2str(length(bestDoublets.idx_crossValid)) ' doublets, after crossvalidation'];'Data is Unthresholded'})
+xlim([15 scalePlot])
+ylim([15 scalePlot])
+grid on
+hold on
+
+% plot upright preferers in green
+scatter(bestDoublets.doublets_inverted(preference_analysis.d_idx_up_sign),...
+        bestDoublets.doublets_upright (preference_analysis.d_idx_up_sign),...
+        20,'MarkerEdgeColor','k',...
+           'MarkerFaceColor','g'...
+        );
+% plot inverted preferers in red
+scatter(bestDoublets.doublets_inverted(preference_analysis.d_idx_inv_sign),...
+        bestDoublets.doublets_upright (preference_analysis.d_idx_inv_sign),...
+        20,'MarkerEdgeColor','k',...
+           'MarkerFaceColor','r'...
+        );
+% % plot neutrals in blue
+% scatter(bestDoublets.doublets_inverted(preference_analysis.d_idx_neutral),...
+%         bestDoublets.doublets_upright (preference_analysis.d_idx_neutral),...
 %         20,'MarkerEdgeColor','k',...
-%            'MarkerFaceColor','b'...
-%         )
-% xlabel('Inverted Localization')
-% ylabel('Upright Localization')
-% title({['Best ' int2str(length(bestDoublets.idx_crossValid)) ' doublets, after crossvalidation'];'Data is Unthresholded'})
-% xlim([15 scalePlot])
-% ylim([15 scalePlot])
-% grid on
-% hold on
-% 
-% % plot upright preferers in green
-% scatter(bestDoublets.doublets_inverted(preference_analysis.d_idx_up_sign),...
-%         bestDoublets.doublets_upright (preference_analysis.d_idx_up_sign),...
-%         20,'MarkerEdgeColor','k',...
-%            'MarkerFaceColor','g'...
+%            'MarkerFaceColor','y'...
 %         );
-% % plot inverted preferers in red
-% scatter(bestDoublets.doublets_inverted(preference_analysis.d_idx_inv_sign),...
-%         bestDoublets.doublets_upright (preference_analysis.d_idx_inv_sign),...
-%         20,'MarkerEdgeColor','k',...
-%            'MarkerFaceColor','r'...
-%         );
-% % % plot neutrals in blue
-% % scatter(bestDoublets.doublets_inverted(preference_analysis.d_idx_neutral),...
-% %         bestDoublets.doublets_upright (preference_analysis.d_idx_neutral),...
-% %         20,'MarkerEdgeColor','k',...
-% %            'MarkerFaceColor','y'...
-% %         );
+
+plot(15:50,15:50,'k')
+legend('Human Upright SEM','Human Upright','Human Inverted SEM','Human on Inverted',...
+       [int2str(length(preference_analysis.d_idx_neutral))  ' Neutral Patches'],...
+       [int2str(length(preference_analysis.d_idx_up_sign))  ' Upright Preferers'],...
+       [int2str(length(preference_analysis.d_idx_inv_sign)) ' Inverted Preferers'],...
+       '45 degree line'); 
 % 
-% plot(15:50,15:50,'k')
-% legend('Human Upright SEM','Human Upright','Human Inverted SEM','Human on Inverted',...
-%        [int2str(length(preference_analysis.d_idx_neutral))  ' Neutral Patches'],...
-%        [int2str(length(preference_analysis.d_idx_up_sign))  ' Upright Preferers'],...
-%        [int2str(length(preference_analysis.d_idx_inv_sign)) ' Inverted Preferers'],...
-%        '45 degree line'); 
-% 
-% %% TRIPLETS plot the best patches, with patches showing up/inv preferences overlaid.
+%% TRIPLETS plot the best patches, with patches showing up/inv preferences overlaid.
 % clear; clc;
 % figure
 % load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation1\testing\data\patchSetAdam\lfwSingle50000\scaling_FaceBox\bestPatches.mat')

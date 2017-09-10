@@ -27,12 +27,13 @@ if ispc
 else
     home = '/home/levan/HMAX/annulusExptFixedContrast';
 end
-conditionLoad_testing  = fullfile('simulation4','control_v2');
+conditionLoad_testing  = fullfile('simulation3','part1upright');
 conditionLoad_training = fullfile('simulation4','training');
 conditionSplit = 'patchSet_3x2';
 perfUsedTraining = 'fbox';
 perfUsedTesting  = 'fbox';
 
+% display('Remember to edit back the high contrast condition');
 loadLoc_singles        = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000');
 saveLoc                = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000','combinations',...
                                   combination_type,'doublets',...

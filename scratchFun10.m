@@ -277,12 +277,12 @@ ylim([0 300]);
 
 %% Plot performance of singles on Florences and our images
 % images that were created with Jacob's bgs and Florences faces.
-clear; clc; dbstop if error; close all;
+clear; clc; dbstop if error; %close all;
 
 nPatches = 25000;
 
 % Load Florence's data
-load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation3\part1upright\data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_FaceBox.mat');
+load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation3\part1upright\data\patchSet_3x2\lfwSingle50000\high_contrast_data\fixedLocalization\patchPerformanceInfo_FaceBox.mat');
 % Get the first 25,000 patch performance.
 
 [sorted_indices,idx] = sort(idx_best_patches,'ascend');
@@ -299,6 +299,7 @@ sumStatsPatch_control = sumStatsPatch_control(1:nPatches);
 scaleMin = 0;
 scaleMax = 45;
 
+figure
 scatter(sumStatsPatch_control,sumStatsPatch_florence,...
             10,'MarkerEdgeColor','k',...
               'MarkerFaceColor','r'...
@@ -309,11 +310,11 @@ grid on
 hold on
 plot(scaleMin:scaleMax,scaleMin:scaleMax)
 hold off
-title('Single Patches')
+title('Single Patches. Control vs Florence')
 xlabel('25000 patches on control set')
 ylabel('25000 patches on Florence''s set')
 
-%% Plot singles and doublets on various sets of images
+%% Plot doublets on various sets of images
 clear; clc; dbstop if error;
 
 home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\';
@@ -327,6 +328,7 @@ patches_type     = 'patchSet_3x2';
 nImgsTraining = 1659;
 % nImgsTesting  = 1008;
 nImgsTesting  = 766;
+% nImgsTesting  = 923; % Florence's high contrast data.
 % nImgsTesting  = 1000;
 nPatches      = 25000;
 
@@ -350,7 +352,7 @@ combMatrix_output(:,5) = combMatrix_output(:,5)*100/nImgsTesting;
 figure
 scatter(combMatrix_output(:,4),combMatrix_output(:,5),...
         10,'MarkerEdgeColor','k',...
-              'MarkerFaceColor','b'...
+              'MarkerFaceColor','y'...
               )
 xlim([scaleMin scaleMax])
 ylim([scaleMin scaleMax])
@@ -358,7 +360,7 @@ grid on
 hold on
 plot(scaleMin:scaleMax,scaleMin:scaleMax)
 hold off
-title('Doublet Generalization training/control Images')
+title('Doublet Generalization training vs Control Images')
 % xlabel('Face-box performance on Jacob''s training set')
 % ylabel('Face-box performance on Control annulus images')
 xlabel('Face-box performance on Jacob''s training set')
@@ -367,8 +369,10 @@ ylabel('Face-box performance on Control set')
 %% Plot doublet performance on Florence and Control side-by-side
 clear; clc; close all; dbstop if error;
 
-load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation3\part1upright\data\patchSet_3x2\lfwSingle50000\combinations\find_CPatches\doublets\1000TPatches100CPatches_fbox_x_fbox\combMatrix_output.mat')
-nImgsTesting = 1008;
+% Load florence data
+load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation3\part1upright\data\patchSet_3x2\lfwSingle50000\high_contrast_data\combinations\find_CPatches\doublets\1000TPatches100CPatches_fbox_x_fbox\combMatrix_output.mat')
+% nImgsTesting = 1008;
+nImgsTesting = 923;
 
 florencePerf = combMatrix_output(:,5)*100/nImgsTesting;
 
@@ -390,7 +394,7 @@ grid on
 hold on
 plot(scaleMin:scaleMax,scaleMin:scaleMax)
 hold off
-title('Doublets Patches')
+title('Doublets Patches. Control vs Florence')
 xlabel('Doublets on control set')
 ylabel('Doublets on Florence''s set')
 

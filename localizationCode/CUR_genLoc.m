@@ -13,7 +13,7 @@ if (nargin < 4)
 end
 
 if (nargin < 1)
-    condition = 'annulusExptFixedContrast/simulation4/control_v2/';
+    condition = 'annulusExptFixedContrast/simulation3/part1upright/';
 end
 
 % nImgsAnalyzed        = 720;
@@ -50,6 +50,7 @@ for iTask = 1:numel(tasks)
     else
         home = '/home/levan/HMAX';
     end
+%     display('Remember to edit back the high contrast condition');
     saveLoc   = fullfile(home,condition,'data',tasks{iTask},splitID,'fixedLocalization');
     loadLoc   = fullfile(home,condition,'data',tasks{iTask},splitID);
     
@@ -59,8 +60,8 @@ for iTask = 1:numel(tasks)
     
     diary(fullfile(saveLoc,'diary.mat'));
     
-    mkdir(fullfile(saveLoc,'responseOverlays','hits'));
-    mkdir(fullfile(saveLoc,'responseOverlays','misses'));     
+%     mkdir(fullfile(saveLoc,'responseOverlays','hits'));
+%     mkdir(fullfile(saveLoc,'responseOverlays','misses'));     
     
     if mod(nPatchesAnalyzed,nPatchesPerLoop)~=0
         input = 'loopping messed up'; %#ok<*NASGU>
@@ -131,8 +132,8 @@ for iTask = 1:numel(tasks)
     
     %% Start Loop
     display(['Starting the parallel loop for ' tasks{iTask}]);
-    for iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
-            display('Parfor is Off!!!!');
+    parfor iPatchLoop = startingPatchLoopIdx:nPatchLoops % not sure if starting fomr random patchLoopIdx is gonna be ok. So don't use it so far.
+%             display('Parfor is Off!!!!');
         tic
         %     display(['Starting to run ' tasks{iTask}]);
         

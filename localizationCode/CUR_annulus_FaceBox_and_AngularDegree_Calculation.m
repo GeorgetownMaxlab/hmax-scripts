@@ -43,7 +43,8 @@ rfSizes = 7:2:39;
 c1Space = 8:2:22;
 c1Scale = 1:2:18;
 
-load(fullfile(condition,'exptDesign.mat'));
+% load(fullfile(condition,'exptDesign.mat'));
+load(fullfile(loadLoc,'exptDesign.mat')); % temporary edit, since we're using the high contrast data and exptDesign file is located in that subfolder.
 load(fullfile(loadLoc, ['bestLocC2'   quadType])); %variable in workspace called 'bestLoc'
 load(fullfile(loadLoc, ['bestBandsC2' quadType])); %variable in workspace called 'bestBands'
 

@@ -247,7 +247,7 @@ figure
 hist(face_michelson,10)
 ylim([0 300]);
 
-load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\control_v3\exptDesign.mat')
+load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\control_v2\exptDesign.mat')
 
 cellVersion = squeeze(struct2cell(exptDesign));
 ourMichelsons = cell2mat(cellVersion(8,:));

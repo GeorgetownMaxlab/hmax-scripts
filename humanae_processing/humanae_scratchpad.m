@@ -1,6 +1,69 @@
+%% Paste Florence's faces on an empty background so we can see how much of a halo they have
+clear; clc;
+dbstop if error;
+
+home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
+bgPaths   = lsDir(fullfile(home,'Backgrounds'),{'jpg'});
+facePaths = lsDir(fullfile(home,'HumanaeFaces5Processed','faces_used_by_florence'),{'jpg'});
+maskPaths = lsDir(fullfile(home,'HumanaeFaces5Processed','Mask'),{'jpg'});
+locPaths  = lsDir(fullfile(home,'HumanaeFaces5Processed','locations'),{'mat'});
+
+maskPixelThreshold = 200;
+if ~exist(fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
+        [int2str(maskPixelThreshold) '_maskThreshold']))
+    mkdir(fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
+        [int2str(maskPixelThreshold) '_maskThreshold']));
+end
+
+for iImg = 1:length(facePaths);
+    if mod(iImg,500) == 0
+        iImg
+    end
+    
+%     faceFileName = facePaths{iImg}(length(fullfile(home,'HumanaeFaces5Processed','faces_used_by_florence'))+2:end);
+    [~,faceFileName,ext] = fileparts(facePaths{iImg});
+    faceFileName = [faceFileName ext];
+    
+    % Find idx of the mask corresponding to the face.
+    idx_mask = find(ismember(maskPaths,...
+        fullfile(home,'HumanaeFaces5Processed','Mask',faceFileName)));
+    % Find idx of the location file corresponding to the face.
+%     idx_loc  = find(ismember(locPaths,...
+%         [fullfile(home,'HumanaeFaces5Processed','locations',faceFileName),'.mat']));
+
+
+
+    % Load bg, face, and mask, and facepositions
+    faceImg = grayImage(imread(facePaths{iImg}))/255;
+    maskImg = grayImage(imread(maskPaths{idx_mask}));
+%     facepoints = load(locPaths{idx_loc});
+%     facepoints = facepoints.facepoints;
+
+    bg = zeros(size(faceImg));
+    pasteLocation = [10,10];
+    pastedBg = bg;
+    for iCol = 1:size(faceImg,2)
+        %         iCol
+        for iRow = 1:size(faceImg,1)
+            if maskImg(iRow,iCol) > maskPixelThreshold
+                % taking the ceil of the faceImg dimension might be a
+                % problem, but should lead to an error of utmost 1 pixel
+                % not being pasted in.
+                pastedBg(pasteLocation(1) + iRow,...
+                    pasteLocation(2) + iCol) = ...
+                    faceImg(iRow,iCol);
+            end
+        end
+    end
+%     imshow(pastedBg);
+    imwrite(pastedBg,fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
+        [int2str(maskPixelThreshold) '_maskThreshold'],[faceFileName '.png']));
+
+end
+
 %% Add position angle variable to exptDesign files.
-clear; clc; dbstop if error;
-load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\training\exptDesign.mat')
+% clear; clc; dbstop if error;
+% load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\training\exptDesign.mat')
 
 
 
@@ -298,12 +361,18 @@ load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\training\exptDesi
 %         [int2str(maskPixelThreshold) '_maskThreshold']));
 % end
 % 
-% parfor iImg = 1:length(facePaths);
-%     iImg
+% for iImg = 1:length(facePaths);
+%     if mod(iImg,500) == 0
+%         iImg
+%     end
 % 
 %     faceFileName = facePaths{iImg}(length(fullfile(home,'HumanaeFaces5Processed','faces'))+2:end);
 % 
-% 
+%     % TEMP
+%     if strcmp(faceFileName,'tumblr_n2hztpDnEB1rvapjbo1_500.jpg') == 1
+%         input('Face found')
+%     end
+%     
 %     % Find idx of the mask corresponding to the face.
 %     idx_mask = find(ismember(maskPaths,...
 %         fullfile(home,'HumanaeFaces5Processed','Mask',faceFileName)));
@@ -340,7 +409,6 @@ load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\training\exptDesi
 %         [int2str(maskPixelThreshold) '_maskThreshold'],[faceFileName '.png']));
 % 
 % end
-
 %% Try pasting a face
 % clear; clc;
 %

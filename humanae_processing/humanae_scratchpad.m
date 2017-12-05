@@ -1,65 +1,211 @@
+%% Flexible block for copying various humanae faces and masks with appended number in the beginning.
+% This makes it easier to load in gimp for mask creation. And to keep track
+% of progress.
+clear; clc; dbstop if error;
+
+gimp_maskLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\new_gimp_masks';
+saveLoc  = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\mask_originals_filt';
+source_faces = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\mask_originals';
+orig_facesLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\faces';
+
+if ~exist(saveLoc)
+    mkdir(saveLoc)
+end
+
+sourcefaceNamePaths = lsDir(source_faces,{'png'})';
+maskNamePaths = lsDir(gimp_maskLoc,{'png'})';
+
+[~,sourcefaceNames,~]  = cellfun(@fileparts,sourcefaceNamePaths , 'UniformOutput',false);
+[~,maskNames,~]        = cellfun(@fileparts,maskNamePaths, 'UniformOutput',false);
+
+% % Create the paths to the faces and masks in their original folders. 
+% orig_facePaths  = cellfun(@(S) fullfile(orig_facesLoc, S), faceNames, 'Uniform', 0); % This is genius!!
+% orig_maskPaths  = cellfun(@(S) fullfile(orig_maskLoc, S),  faceNames, 'Uniform', 0); % This is genius!!
+
+
+% % Make sure all these images exist in the original folder.
+% all_files = vertcat(orig_facePaths,orig_maskPaths);
+% status = cellfun(@exist, all_files); % Do these files exist? Should be output "2" for all.
+% assert(isempty(find(status < 2)),'Failed to locate the face file');
+
+% Start copying files over.
+
+    % Make sure folder is empty
+%     saveLocFiles = lsDir(saveLoc,{''})';
+%     cellfun(@delete,saveLocFiles);
+% 
+%     for iFile = 1:length(faceNames)    
+%         copyfile(faceNamePaths{iFile},fullfile(saveLoc,[int2str(iFile) '_' faceNames{iFile} '.png']));
+% %         copyfile(faceNamePaths{iFile},fullfile(saveLoc,[int2str(iFile*2)   '_' faceNames{iFile}]));
+%     end
+
+% Copy those faces whose masks have been created
+for iFace = 1:length(maskNames)
+   copyfile(fullfile(source_faces,[maskNames{iFace} '.png']),saveLoc);
+    
+    
+    
+end
+
+%% Copy the images and their masks to a new folder, to make loading into Inkscape easier
+% % Goal is to load the pic and mask in Inkscape, remove shoulders and neck,
+% % and save the mask. This script just copies the face pics and masks
+% % side-by-side, so I can manually drop them in Inkscape.
+% clear; clc; dbstop if error;
+% 
+% facesFolder = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background\re_organized';
+% saveFolder  = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\to_load_in_inkscape';
+% orig_facesLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\faces';
+% orig_maskLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\Mask';
+% 
+% condition = 'small_halo';
+% gender    = 'male';
+% 
+% facesLoc = fullfile(facesFolder,condition,gender);
+% saveLoc  = fullfile(saveFolder,condition,gender);
+% 
+% if ~exist(saveLoc)
+%     mkdir(saveLoc)
+% end
+% 
+% faceNamePaths = lsDir(facesLoc,{'png'})';
+% 
+% [~,faceNames,~]  = cellfun(@fileparts,faceNamePaths, 'UniformOutput',false);
+% 
+% % Create the paths to the faces and masks in their original folders. 
+% orig_facePaths  = cellfun(@(S) fullfile(orig_facesLoc, S), faceNames, 'Uniform', 0); % This is genius!!
+% orig_maskPaths  = cellfun(@(S) fullfile(orig_maskLoc, S),  faceNames, 'Uniform', 0); % This is genius!!
+% 
+% 
+% % Make sure all these images exist in the original folder.
+% all_files = vertcat(orig_facePaths,orig_maskPaths);
+% status = cellfun(@exist, all_files); % Do these files exist? Should be output "2" for all.
+% assert(isempty(find(status < 2)),'Failed to locate the face file');
+% 
+% % Start copying files over.
+% 
+%     % Make sure folder is empty
+%     saveLocFiles = lsDir(saveLoc,{'jpg'})';
+%     cellfun(@delete,saveLocFiles);
+% 
+%     for iFile = 1:length(faceNames)    
+%         copyfile(orig_facePaths{iFile},fullfile(saveLoc,[int2str(iFile*2-1) '_' faceNames{iFile}]));
+%         copyfile(orig_maskPaths{iFile},fullfile(saveLoc,[int2str(iFile*2)   '_' faceNames{iFile}]));
+%     end
+% 
+% 
+
+%% Create crossValidInfo file for simulation5.
+% % This will combine male and female faces from no-halo and small-halo
+% % folders, and split them into training/testing batches.
+% clear; clc; dbstop if error;
+% 
+% % Use the same bg split as in simulation 4
+% load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\crossValidInfo.mat')
+% crossValidInfo.trainingFaces = [];
+% crossValidInfo.testingFaces  = [];
+% 
+% home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
+% loc_blank_faces = fullfile(home,'HumanaeFaces5Processed','blank_background','re_organized');
+% loc_orig_faces  = fullfile(home,'HumanaeFaces5Processed','faces');
+% 
+% % Get all the no-halo paths
+% none_m_paths = lsDir(fullfile(loc_blank_faces,'none_at_all','male'),{'png'})';
+% none_f_paths = lsDir(fullfile(loc_blank_faces,'none_at_all','female'),{'png'})';
+% 
+% % Get all the small-halo paths
+% small_m_paths = lsDir(fullfile(loc_blank_faces,'small_halo','male'),{'png'})';
+% small_f_paths = lsDir(fullfile(loc_blank_faces,'small_halo','female'),{'png'})';
+% 
+% % Isolate the names of the face images
+% [~,none_m_face_names,~]  = cellfun(@fileparts,none_m_paths, 'UniformOutput',false); % in this case, face_name is appended with ".jpg".
+% [~,none_f_face_names,~]  = cellfun(@fileparts,none_f_paths, 'UniformOutput',false); % in this case, face_name is appended with ".jpg".
+% [~,small_m_face_names,~] = cellfun(@fileparts,small_m_paths,'UniformOutput',false); % in this case, face_name is appended with ".jpg".
+% [~,small_f_face_names,~] = cellfun(@fileparts,small_f_paths,'UniformOutput',false); % in this case, face_name is appended with ".jpg".
+% 
+% % Concatinate names of face images with the location path to the original folder.
+% orig_none_m_face_names  = cellfun(@(S) fullfile(loc_orig_faces, S), none_m_face_names, 'Uniform', 0); % This is genius!!
+% orig_none_f_face_names  = cellfun(@(S) fullfile(loc_orig_faces, S), none_f_face_names, 'Uniform', 0);
+% orig_small_m_face_names = cellfun(@(S) fullfile(loc_orig_faces, S), small_m_face_names, 'Uniform', 0);
+% orig_small_f_face_names = cellfun(@(S) fullfile(loc_orig_faces, S), small_f_face_names, 'Uniform', 0);
+% 
+% % Make sure all these images exist in the original folder.
+% all_files = vertcat(orig_none_m_face_names,orig_none_f_face_names,orig_small_m_face_names,orig_small_f_face_names);
+% status = cellfun(@exist, all_files); % Do these files exist? Should be output "2" for all.
+% assert(isempty(find(status < 2)),'Failed to locate the face file');
+% 
+%     % Shuffle the order of faces and split males and females in half. First
+%     % halves will be fore training images and second half would be for
+%     % testing halves.
+% 
+% 
+% 
+% 
+
+
+
 %% Paste Florence's faces on an empty background so we can see how much of a halo they have
-clear; clc;
-dbstop if error;
-
-home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
-bgPaths   = lsDir(fullfile(home,'Backgrounds'),{'jpg'});
-facePaths = lsDir(fullfile(home,'HumanaeFaces5Processed','faces_used_by_florence'),{'jpg'});
-maskPaths = lsDir(fullfile(home,'HumanaeFaces5Processed','Mask'),{'jpg'});
-locPaths  = lsDir(fullfile(home,'HumanaeFaces5Processed','locations'),{'mat'});
-
-maskPixelThreshold = 200;
-if ~exist(fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
-        [int2str(maskPixelThreshold) '_maskThreshold']))
-    mkdir(fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
-        [int2str(maskPixelThreshold) '_maskThreshold']));
-end
-
-for iImg = 1:length(facePaths);
-    if mod(iImg,500) == 0
-        iImg
-    end
-    
-%     faceFileName = facePaths{iImg}(length(fullfile(home,'HumanaeFaces5Processed','faces_used_by_florence'))+2:end);
-    [~,faceFileName,ext] = fileparts(facePaths{iImg});
-    faceFileName = [faceFileName ext];
-    
-    % Find idx of the mask corresponding to the face.
-    idx_mask = find(ismember(maskPaths,...
-        fullfile(home,'HumanaeFaces5Processed','Mask',faceFileName)));
-    % Find idx of the location file corresponding to the face.
-%     idx_loc  = find(ismember(locPaths,...
-%         [fullfile(home,'HumanaeFaces5Processed','locations',faceFileName),'.mat']));
-
-
-
-    % Load bg, face, and mask, and facepositions
-    faceImg = grayImage(imread(facePaths{iImg}))/255;
-    maskImg = grayImage(imread(maskPaths{idx_mask}));
-%     facepoints = load(locPaths{idx_loc});
-%     facepoints = facepoints.facepoints;
-
-    bg = zeros(size(faceImg));
-    pasteLocation = [10,10];
-    pastedBg = bg;
-    for iCol = 1:size(faceImg,2)
-        %         iCol
-        for iRow = 1:size(faceImg,1)
-            if maskImg(iRow,iCol) > maskPixelThreshold
-                % taking the ceil of the faceImg dimension might be a
-                % problem, but should lead to an error of utmost 1 pixel
-                % not being pasted in.
-                pastedBg(pasteLocation(1) + iRow,...
-                    pasteLocation(2) + iCol) = ...
-                    faceImg(iRow,iCol);
-            end
-        end
-    end
-%     imshow(pastedBg);
-    imwrite(pastedBg,fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
-        [int2str(maskPixelThreshold) '_maskThreshold'],[faceFileName '.png']));
-
-end
+% clear; clc;
+% dbstop if error;
+% 
+% home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
+% bgPaths   = lsDir(fullfile(home,'Backgrounds'),{'jpg'});
+% facePaths = lsDir(fullfile(home,'HumanaeFaces5Processed','faces_used_by_florence'),{'jpg'});
+% maskPaths = lsDir(fullfile(home,'HumanaeFaces5Processed','Mask'),{'jpg'});
+% locPaths  = lsDir(fullfile(home,'HumanaeFaces5Processed','locations'),{'mat'});
+% 
+% maskPixelThreshold = 200;
+% if ~exist(fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
+%         [int2str(maskPixelThreshold) '_maskThreshold']))
+%     mkdir(fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
+%         [int2str(maskPixelThreshold) '_maskThreshold']));
+% end
+% 
+% for iImg = 1:length(facePaths);
+%     if mod(iImg,500) == 0
+%         iImg
+%     end
+%     
+% %     faceFileName = facePaths{iImg}(length(fullfile(home,'HumanaeFaces5Processed','faces_used_by_florence'))+2:end);
+%     [~,faceFileName,ext] = fileparts(facePaths{iImg});
+%     faceFileName = [faceFileName ext];
+%     
+%     % Find idx of the mask corresponding to the face.
+%     idx_mask = find(ismember(maskPaths,...
+%         fullfile(home,'HumanaeFaces5Processed','Mask',faceFileName)));
+%     % Find idx of the location file corresponding to the face.
+% %     idx_loc  = find(ismember(locPaths,...
+% %         [fullfile(home,'HumanaeFaces5Processed','locations',faceFileName),'.mat']));
+% 
+% 
+% 
+%     % Load bg, face, and mask, and facepositions
+%     faceImg = grayImage(imread(facePaths{iImg}))/255;
+%     maskImg = grayImage(imread(maskPaths{idx_mask}));
+% %     facepoints = load(locPaths{idx_loc});
+% %     facepoints = facepoints.facepoints;
+% 
+%     bg = zeros(size(faceImg));
+%     pasteLocation = [10,10];
+%     pastedBg = bg;
+%     for iCol = 1:size(faceImg,2)
+%         %         iCol
+%         for iRow = 1:size(faceImg,1)
+%             if maskImg(iRow,iCol) > maskPixelThreshold
+%                 % taking the ceil of the faceImg dimension might be a
+%                 % problem, but should lead to an error of utmost 1 pixel
+%                 % not being pasted in.
+%                 pastedBg(pasteLocation(1) + iRow,...
+%                     pasteLocation(2) + iCol) = ...
+%                     faceImg(iRow,iCol);
+%             end
+%         end
+%     end
+% %     imshow(pastedBg);
+%     imwrite(pastedBg,fullfile('C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\blank_background_florence',...
+%         [int2str(maskPixelThreshold) '_maskThreshold'],[faceFileName '.png']));
+% 
+% end
 
 %% Add position angle variable to exptDesign files.
 % clear; clc; dbstop if error;

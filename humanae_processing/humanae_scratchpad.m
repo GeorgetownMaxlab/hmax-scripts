@@ -1,51 +1,106 @@
+%% Create crossValidInfo file for simulation5
+% Use the crossValidInfo file for simulation4, to determine which bgs to
+% use. 
+clear; clc; dbstop if error;
+
+home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed';
+
+load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4\crossValidInfo.mat');
+crossValidInfo = rmfield(crossValidInfo,{'trainingFaces','testingFaces','testingBgs'});
+
+maskLoc = fullfile(home,'new_gimp_masks_final');
+maskLoc_males   = lsDir(fullfile(maskLoc,'male'),  {'png'})';
+maskLoc_females = lsDir(fullfile(maskLoc,'female'),{'png'})';
+maskLoc = [maskLoc_males(1:50);maskLoc_females(1:50)];
+
+[~,faceNames,~]  = cellfun(@fileparts,maskLoc, 'UniformOutput',false);
+facesLoc = fullfile(home,'faces',faceNames);
+for iFace = 1:length(facesLoc)
+    facesLoc{iFace} = [facesLoc{iFace} '.jpg'];
+    assert(exist(facesLoc{iFace}) == 2);
+end
+
+crossValidInfo.trainingBgs   = crossValidInfo.trainingBgs';
+crossValidInfo.trainingFaces = facesLoc;
+%% Get rid of index numbers for masks and faces.
+% % So original masks I created were created from face images that had a
+% % number appended at the beginning. This script removes that number, and
+% % also sorts the face masks into male and female folders.
+% clear; clc; dbstop if error;
+% 
+% home = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed';
+% 
+% gender = 'female';
+% faceLocFilt  = fullfile(home,'mask_originals_filt',gender);
+% maskLoc      = fullfile(home,'new_gimp_masks');
+% saveLoc_mask = fullfile(home,'new_gimp_masks_final',gender);
+% 
+% if ~exist(saveLoc_mask)
+%     mkdir(saveLoc_mask)
+% end
+% 
+% sourcefaceNamePaths = lsDir(faceLocFilt,{'png'})';
+% gimpMaskNamePaths   = lsDir(maskLoc,{'png'})';
+% 
+% [~,sourcefaceNames,ext]  = cellfun(@fileparts,sourcefaceNamePaths , 'UniformOutput',false);
+% 
+% % Copy the mask to the new location, separated by gender. Also remove the index before the mask.
+% for iFile = 1:length(sourcefaceNames)
+%     key = '_';
+%     idx_start = strfind(sourcefaceNames{iFile},key);
+%     idx_start = idx_start(1)+1;
+%     copyName = sourcefaceNames{iFile}(idx_start:end); % removes the numbers in the beginning of the file.
+%     copyfile([fullfile(maskLoc,sourcefaceNames{iFile}) '.png'],[fullfile(saveLoc_mask,copyName) '.png']);
+% end
+    
 %% Flexible block for copying various humanae faces and masks with appended number in the beginning.
 % This makes it easier to load in gimp for mask creation. And to keep track
 % of progress.
-clear; clc; dbstop if error;
-
-gimp_maskLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\new_gimp_masks';
-saveLoc  = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\mask_originals_filt';
-source_faces = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\mask_originals';
-orig_facesLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\faces';
-
-if ~exist(saveLoc)
-    mkdir(saveLoc)
-end
-
-sourcefaceNamePaths = lsDir(source_faces,{'png'})';
-maskNamePaths = lsDir(gimp_maskLoc,{'png'})';
-
-[~,sourcefaceNames,~]  = cellfun(@fileparts,sourcefaceNamePaths , 'UniformOutput',false);
-[~,maskNames,~]        = cellfun(@fileparts,maskNamePaths, 'UniformOutput',false);
-
-% % Create the paths to the faces and masks in their original folders. 
-% orig_facePaths  = cellfun(@(S) fullfile(orig_facesLoc, S), faceNames, 'Uniform', 0); % This is genius!!
-% orig_maskPaths  = cellfun(@(S) fullfile(orig_maskLoc, S),  faceNames, 'Uniform', 0); % This is genius!!
-
-
-% % Make sure all these images exist in the original folder.
-% all_files = vertcat(orig_facePaths,orig_maskPaths);
-% status = cellfun(@exist, all_files); % Do these files exist? Should be output "2" for all.
-% assert(isempty(find(status < 2)),'Failed to locate the face file');
-
-% Start copying files over.
-
-    % Make sure folder is empty
-%     saveLocFiles = lsDir(saveLoc,{''})';
-%     cellfun(@delete,saveLocFiles);
+% clear; clc; dbstop if error;
 % 
-%     for iFile = 1:length(faceNames)    
-%         copyfile(faceNamePaths{iFile},fullfile(saveLoc,[int2str(iFile) '_' faceNames{iFile} '.png']));
-% %         copyfile(faceNamePaths{iFile},fullfile(saveLoc,[int2str(iFile*2)   '_' faceNames{iFile}]));
-%     end
-
-% Copy those faces whose masks have been created
-for iFace = 1:length(maskNames)
-   copyfile(fullfile(source_faces,[maskNames{iFace} '.png']),saveLoc);
-    
-    
-    
-end
+% gimp_maskLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\new_gimp_masks';
+% saveLoc  = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\mask_originals_filt';
+% source_faces = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\mask_originals';
+% orig_facesLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\faces';
+% 
+% if ~exist(saveLoc)
+%     mkdir(saveLoc)
+% end
+% 
+% sourcefaceNamePaths = lsDir(source_faces,{'png'})';
+% maskNamePaths = lsDir(gimp_maskLoc,{'png'})';
+% 
+% [~,sourcefaceNames,~]  = cellfun(@fileparts,sourcefaceNamePaths , 'UniformOutput',false);
+% [~,maskNames,~]        = cellfun(@fileparts,maskNamePaths, 'UniformOutput',false);
+% 
+% % % Create the paths to the faces and masks in their original folders. 
+% % orig_facePaths  = cellfun(@(S) fullfile(orig_facesLoc, S), faceNames, 'Uniform', 0); % This is genius!!
+% % orig_maskPaths  = cellfun(@(S) fullfile(orig_maskLoc, S),  faceNames, 'Uniform', 0); % This is genius!!
+% 
+% 
+% % % Make sure all these images exist in the original folder.
+% % all_files = vertcat(orig_facePaths,orig_maskPaths);
+% % status = cellfun(@exist, all_files); % Do these files exist? Should be output "2" for all.
+% % assert(isempty(find(status < 2)),'Failed to locate the face file');
+% 
+% % Start copying files over.
+% 
+%     % Make sure folder is empty
+% %     saveLocFiles = lsDir(saveLoc,{''})';
+% %     cellfun(@delete,saveLocFiles);
+% % 
+% %     for iFile = 1:length(faceNames)    
+% %         copyfile(faceNamePaths{iFile},fullfile(saveLoc,[int2str(iFile) '_' faceNames{iFile} '.png']));
+% % %         copyfile(faceNamePaths{iFile},fullfile(saveLoc,[int2str(iFile*2)   '_' faceNames{iFile}]));
+% %     end
+% 
+% % Copy those faces whose masks have been created
+% for iFace = 1:length(maskNames)
+%    copyfile(fullfile(source_faces,[maskNames{iFace} '.png']),saveLoc);
+%     
+%     
+%     
+% end
 
 %% Copy the images and their masks to a new folder, to make loading into Inkscape easier
 % % Goal is to load the pic and mask in Inkscape, remove shoulders and neck,

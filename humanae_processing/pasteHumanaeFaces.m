@@ -5,11 +5,11 @@
 clear; clc; dbstop if error;
 
 humanaeLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
-home       = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4';
+home       = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation5';
 
 load(fullfile(home,'crossValidInfo.mat'));
 
-condition = 'testing'
+condition = 'training'
 
 if strcmp(condition,'training')
     bgPaths   = crossValidInfo.trainingBgs;
@@ -20,7 +20,8 @@ elseif strcmp(condition,'testing')
 else
     error('Wrong condition');
 end
-maskPaths = lsDir(fullfile(humanaeLoc,'HumanaeFaces5Processed','Mask'),{'jpg'});
+% maskPaths = lsDir(fullfile(humanaeLoc,'HumanaeFaces5Processed','Mask'),{'jpg'});
+maskPaths = lsDir(fullfile(humanaeLoc,'HumanaeFaces5Processed','new_gimp_masks_final','both_genders'),{'png'});
 locPaths  = lsDir(fullfile(humanaeLoc,'HumanaeFaces5Processed','locations'),{'mat'});
 
 resizeDims = 50*766/500; % Jacob's face images are about 766 pixels, but the face itself is about 500.
@@ -32,6 +33,9 @@ exampleBg = imresize(exampleBg,resizeBg/size(exampleBg,1));
 bgDims = size(exampleBg);
 
 % For each face, paste it in a randomly chosen bg.
+% Singe n faces is less than n bgs, repmat the facePaths array 10 times.
+% That'll give us 1000 faces. Then paste them randomly in bgs.
+facePaths = repmat(facePaths(:),10,1);
 bgForEachFace = repmat(1:length(bgPaths),1,20); % Generate a vector of indices for bgs.
 randomizeBgs  = randperm(length(bgForEachFace)); % shuffle the vector.
 bgForEachFace = bgForEachFace(randomizeBgs);     % shuffle the vector.
@@ -44,7 +48,7 @@ parfor iFace = 1:length(facePaths);
     
     % Find idx of the mask corresponding to the face.
     idx_mask = find(ismember(maskPaths,...
-        fullfile(humanaeLoc,'HumanaeFaces5Processed','Mask',[faceFileName '.jpg'])));
+        fullfile(humanaeLoc,'HumanaeFaces5Processed','new_gimp_masks_final','both_genders',[faceFileName '.png'])));
     % Find idx of the location file corresponding to the face.
     idx_loc  = find(ismember(locPaths,...
         fullfile(humanaeLoc,'HumanaeFaces5Processed','locations',[faceFileName '.jpg.mat'])));
@@ -139,7 +143,7 @@ parfor iFace = 1:length(facePaths);
     exptDesign(iFace).imageDim      = bgDims;
     exptDesign(iFace).michelson     = face_michelson;
     
-    imwrite(pastedBg,fullfile('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4',condition,'images',...
+    imwrite(pastedBg,fullfile(home,condition,'images',...
         ['img' int2str(iFace) '__' faceFileName '__' bgFileName '.png']));
     
 end

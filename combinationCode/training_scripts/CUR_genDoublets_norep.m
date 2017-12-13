@@ -59,9 +59,9 @@ display('starting parfor loop')
 
 parfor iPatchLoop = 1:nTPatchLoops
 %     display('Parfor is off!!!!');
-    display('Combining based on FACE-BOX');
+%     display('Combining based on FACE-BOX');
 %     display('Combining based on WEDGE');    
-%     iPatchLoop
+    display(['Patch loop is ' int2str(iPatchLoop)]);
     CUR_findScaledDoublets_FaceBox_par(...
         nPatchesAnalyzed,...
         iPatchLoop,...

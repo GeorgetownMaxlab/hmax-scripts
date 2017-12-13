@@ -2,7 +2,7 @@ function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,combination_type)
 % run on the other set. 
 
 % This script uses the face-box data as the training data and the wedge
-% criterion for the testing evaluation.
+% criterion of 30 degrees for the testing evaluation.
 
 % Use the CUR_runScaledDoublet_FaceBox.m to evaluate doublets on the
 % testing set using the face-box criterion.
@@ -52,7 +52,7 @@ runParameterComments = 'none'; %input('Any comments about the run?\n'); %#ok<*NA
 
 load(fullfile(combMatrixLoc_doublets,'combMatrix'));
 save(fullfile(saveLoc,'combMatrix_Source'),'combMatrix');
-c2f_testing_singles = load(fullfile(loadLoc_singles,'c2f')); % the variable name says "testing" but its actually c2 file for training set. See above description.
+c2f_testing_singles = load(fullfile(loadLoc_singles,'c2f')); % the variable name says "testing" but its actually c2 file for training set. See above description. % 2017-12-13, why is this previous comment here? LB
 c2f_testing_singles = c2f_testing_singles.c2f;
 imgHitsWedge_testing_singles = load(fullfile(loadLoc_singles,'fixedLocalization','imgHitsWedge'));
 imgHitsWedge_testing_singles = imgHitsWedge_testing_singles.imgHitsWedge;

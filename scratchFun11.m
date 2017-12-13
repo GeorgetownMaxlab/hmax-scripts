@@ -1,28 +1,59 @@
-%% Resort facesLoc.mat and c2, bestLoc, bestBands files...
+%% sequence of script to run doublet combination on training then testing automatically.
 clear; clc; dbstop if error;
 
-if ispc
-    fileLoc = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation5\training\data\patchSet_3x2\lfwSingle50000';
-else
-    fileLoc = '/home/levan/HMAX/annulusExptFixedContrast/simulation5/training/data/patchSet_3x2/lfwSingle50000';
-end
-    
-load(fullfile(fileLoc,'facesLoc.mat'));
-load(fullfile(fileLoc,'c2f.mat'));
-load(fullfile(fileLoc,'bestLocC2f.mat'));
-load(fullfile(fileLoc,'bestBandsC2f.mat'));
+nTPatches1 = 1000;
+nCPathces1 = 1000;
 
-[sortedFacesLoc,idx_sort] = sort_nat(facesLoc{1});
+nTPatches2 = 2000;
+nCPatches2 = 100;
 
-c2f         = c2f(:,idx_sort);
-bestBands   = bestBands(:,idx_sort);
-bestLoc     = bestLoc(:,idx_sort,:);
-facesLoc{1} = sortedFacesLoc;
+nTPatches3 = 2000;
+nCPatches3 = 2000;
 
-save(fullfile(fileLoc,'facesLoc.mat'),'facesLoc');
-save(fullfile(fileLoc,'c2f.mat'),'c2f');
-save(fullfile(fileLoc,'bestLocC2f.mat'),'bestLoc');
-save(fullfile(fileLoc,'bestBandsC2f.mat'),'bestBands');
+% Create doublets using various combination of TPatches and CPatches.
+CUR_genDoublets_norep(50000,nTPatches1,40,nCPathces1);
+CUR_genDoublets_norep(50000,nTPatches2,80,nCPatches2);
+CUR_genDoublets_norep(50000,nTPatches3,80,nCPatches3);
+display('done with making doublets');
+
+% Now test these with FACE-BOX criterion.
+CUR_runScaledDoublet_FaceBox(nTPatches1,nCPathces1);
+CUR_runScaledDoublet_FaceBox(nTPatches2,nCPatches2);
+CUR_runScaledDoublet_FaceBox(nTPatches3,nCPatches3);
+display('done with testing doublets with face-box criterion');
+
+% Now test these with WEDGE criterion.
+CUR_runScaledDoublet_wedge30(nTPatches1,nCPathces1);
+CUR_runScaledDoublet_wedge30(nTPatches2,nCPatches2);
+CUR_runScaledDoublet_wedge30(nTPatches3,nCPatches3);
+display('done with testing doublets with wedge criterion');
+
+
+%% Resort facesLoc.mat and c2, bestLoc, bestBands files...
+% clear; clc; dbstop if error;
+% 
+% if ispc
+%     fileLoc = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation5\training\data\patchSet_3x2\lfwSingle50000';
+% else
+%     fileLoc = '/home/levan/HMAX/annulusExptFixedContrast/simulation5/training/data/patchSet_3x2/lfwSingle50000';
+% end
+%     
+% load(fullfile(fileLoc,'facesLoc.mat'));
+% load(fullfile(fileLoc,'c2f.mat'));
+% load(fullfile(fileLoc,'bestLocC2f.mat'));
+% load(fullfile(fileLoc,'bestBandsC2f.mat'));
+% 
+% [sortedFacesLoc,idx_sort] = sort_nat(facesLoc{1});
+% 
+% c2f         = c2f(:,idx_sort);
+% bestBands   = bestBands(:,idx_sort);
+% bestLoc     = bestLoc(:,idx_sort,:);
+% facesLoc{1} = sortedFacesLoc;
+% 
+% save(fullfile(fileLoc,'facesLoc.mat'),'facesLoc');
+% save(fullfile(fileLoc,'c2f.mat'),'c2f');
+% save(fullfile(fileLoc,'bestLocC2f.mat'),'bestLoc');
+% save(fullfile(fileLoc,'bestBandsC2f.mat'),'bestBands');
 
 %% Edit out those images from Florence's set that have too low Michelson contrast
 % clear; clc; close all;

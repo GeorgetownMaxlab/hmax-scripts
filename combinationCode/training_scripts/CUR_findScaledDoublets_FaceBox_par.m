@@ -21,7 +21,7 @@ idxTPatchEnd   = (iPatchLoop)  *nTPatchesPerLoop;
 load(fullfile(loadLoc,'fixedLocalization','patchPerformanceInfo_FaceBox.mat'));
 load(fullfile(loadLoc,'fixedLocalization','imgHitsFaceBox.mat'));
 load(fullfile(loadLoc,'c2f.mat'),'c2f');
-display('Done loading c2 related files...')
+% display('Done loading c2 related files...')
 % imgHitsFaceBox = imgHitsFaceBox.imgHits;
 nImgs = size(c2f,2);
 
@@ -33,7 +33,7 @@ idx_for_combMatrix = 1; % since iTPatch will depend on the iPatchLoop, whereas
 % indicated where in the combMatrix the data from the iTPatch loop goes.
 
 for iTPatch = idxTPatchStart:idxTPatchEnd
-    idx_for_combMatrix
+%     idx_for_combMatrix
     
     % Preprocessing
     idxTopPatch = idx_best_patches(iTPatch);

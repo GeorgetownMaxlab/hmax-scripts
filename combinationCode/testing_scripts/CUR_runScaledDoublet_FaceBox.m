@@ -1,10 +1,14 @@
 function CUR_runScaledDoublet_FaceBox(nTPatches,nCPatches,combination_type)
 % run on the other set. 
 
-% This script uses the face-box data. Use this script to evaluate doublets
-% on the testing set of the Jacob's pictures. Use the
-% CUR_runScaledDoublet_wedge30.m to evaluate doublets on the images that
-% Florence's subject's saw.
+% This script uses the face-box data as the training data and the face-box
+% criterion for the testing evaluation.
+
+% Use the CUR_runScaledDoublet_wedge30.m to evaluate doublets on the
+% testing set using the wedge criterion.
+
+% This script has been updated to have saveLoc be in the local simulation
+% "testing" folder.
 
 % clear; clc;
 dbstop if error;
@@ -18,8 +22,8 @@ if (nargin < 3)
     combination_type = 'find_CPatches';
 end
 if (nargin < 1)  
-    nTPatches = 1000;
-    nCPatches = 100;
+    nTPatches = 100;
+    nCPatches = 1000;
 end
 
 if ispc
@@ -27,15 +31,16 @@ if ispc
 else
     home = '/home/levan/HMAX/annulusExptFixedContrast';
 end
+simulation = 'simulation5'; % which simulation is this?
 conditionLoad_testing  = fullfile('simulation3','part1upright');
-conditionLoad_training = fullfile('simulation4','training');
+conditionLoad_training = fullfile(simulation,'training');
 conditionSplit = 'patchSet_3x2';
 perfUsedTraining = 'fbox';
 perfUsedTesting  = 'fbox';
 
 % display('Remember to edit back the high contrast condition');
 loadLoc_singles        = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000');
-saveLoc                = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000','combinations',...
+saveLoc                = fullfile(home,simulation,'testing','data',conditionSplit,'lfwSingle50000','combinations',...
                                   combination_type,'doublets',...
                                  [int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches_' ...
                                  perfUsedTraining '_x_' perfUsedTesting]);
@@ -49,7 +54,7 @@ if ~exist(saveLoc,'dir')
 end
 
 
-runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
+runParameterComments = 'none'; %input('Any comments about the run?\n'); %#ok<*NASGU>
 
 load(fullfile(combMatrixLoc_doublets,'combMatrix'));
 save(fullfile(saveLoc,'combMatrix_Source'),'combMatrix');

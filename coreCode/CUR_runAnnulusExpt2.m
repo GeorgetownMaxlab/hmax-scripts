@@ -16,17 +16,17 @@ function CUR_runAnnulusExpt2(locationFileToLoad, saveFolder, condition,...
 %                     'patchSet_3x2')
 
 % CUR_runAnnulusExpt2('annulusExptFixedContrast/simulation5/training/facesLoc.mat',...
-%                     'annulusExptFixedContrast/simulation5/training/data/patchSet_3x2/lfwSingle50000',...
+%                     'annulusExptFixedContrast/simulation5/training/data/patchSet_3x2/lfwSingle50000/sandbox',...
 %                     'annulusExptFixedContrast/simulation5/training/',...
-%                     50000,3125,1,16,...
-%                     1000,125,4,...
+%                     5,5,1,1,...
+%                     150,150,5,...
 %                     'patchSet_3x2')
 
 % CUR_runAnnulusExpt2('annulusExptFixedContrast/simulation5/training/facesLoc.mat',...
 %                     'annulusExptFixedContrast/simulation5/training/data/patchSet_3x2/lfwSingle50000/sandbox',...
 %                     'annulusExptFixedContrast/simulation5/training/',...
 %                     10,5,1,2,...
-%                     10,5,2,...
+%                     4,2,2,...
 %                     'patchSet_3x2')
 
 
@@ -109,10 +109,10 @@ rng(seedNum, 'twister');
 save(fullfile(saveLoc,'randomseed'), 'seedNum');
 diary(fullfile(saveLoc,'diary.mat'));
 
-if exist('startingPatchLoopIdx') ~= 1
+if ~exist('startingPatchLoopIdx','var')
     startingPatchLoopIdx = 1;
 end
-if exist('endingPatchLoopIdx') ~= 1
+if ~exist('endingPatchLoopIdx','var')
     endingPatchLoopIdx = nPatchesAnalyzed/nPatchesPerLoop;
 end
 
@@ -121,6 +121,9 @@ end
 load(fullfile(loadLoc,locationFileToLoad));
 facesLoc = convertFacesLocAnnulusFixedContrast(facesLoc,pcStatus);
     facesLoc{1} = facesLoc{1}(1:nImgsAnalyzed);
+    % Make sure facesLoc is sorted. This makes localization script easier.
+    [~,idx_sorted_facesLoc] = sort_nat(facesLoc{1});
+    assert(isequal(idx_sorted_facesLoc',1:length(facesLoc{1})));
     save(fullfile(saveLoc,'facesLoc'),'facesLoc');
 
 %% Save parameter space.%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -220,7 +223,9 @@ end % patch loop
 %% Concatinate all the output
 concatinateOutput(saveLoc,nPatchesPerLoop,nPatchesAnalyzed);
 %% Run localization code
-% display('starting localization code...');
+% Code below will run CUR_genLoc.m script, which parallelizes localiztion across patches. 
+display('starting localization code...');
+CUR_genLoc(condition,nPatchesAnalyzed,nPatchesPerLoop,startingPatchLoopIdx);
 % CUR_annulusWedgeAndBoxLocalization_resizing_diff_patchSizes(nPatchesAnalyzed,patchSizes(:,1),saveFolder,condition);
 diary off
 %% openCV implementation to create C2

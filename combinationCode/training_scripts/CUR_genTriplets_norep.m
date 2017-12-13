@@ -5,19 +5,19 @@ function CUR_genTriplets_norep(nTPatchesLoad,nCPatchesLoad,nTPatches,nTPatchesPe
 dbstop if error;
 
 if (nargin < 1)
-    nTPatchesLoad    = 10;
-    nCPatchesLoad    = 10;
-    nTPatches        = 10;
-    nTPatchesPerLoop = 5;
-    nCPatches        = 10;
+    nTPatchesLoad    = 100;
+    nCPatchesLoad    = 1000;
+    nTPatches        = 100;
+    nTPatchesPerLoop = 10;
+    nCPatches        = 1000;
 end
 
 runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
 
 if ispc
-    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation3';
+    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation5';
 else
-    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation3';
+    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation5';
 end
 if (nargin < 6)
     condition         = 'training';

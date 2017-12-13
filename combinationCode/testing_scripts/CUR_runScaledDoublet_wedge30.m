@@ -1,25 +1,25 @@
 function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,combination_type)
 % run on the other set. 
-% NOTE: this script will works with the new combined data across
-% patch-types, and uses the 30-degree wedge data.
+
+% This script uses the face-box data as the training data and the wedge
+% criterion for the testing evaluation.
+
+% Use the CUR_runScaledDoublet_FaceBox.m to evaluate doublets on the
+% testing set using the face-box criterion.
+
+% This script has been updated to have saveLoc be in the local simulation
+% "testing" folder.
 
 % clear; clc;
 dbstop if error;
-
-% if exist(CPatchThreshold) == 1 % in case we are using the thresholding strategy.
-%     CPatchThreshold = 20;
-%     combination_type = fullfile('find_CPatches_thresholding',['CPatchThreshold_' int2str(CPatchThreshold)]);
-% else
-%     CPatchThreshold = [];
-% end
 
 if (nargin < 3)
     combination_type = 'find_CPatches';
 end
 
 if (nargin < 1)  
-    nTPatches = 1000;
-    nCPatches = 100;
+    nTPatches = 100;
+    nCPatches = 1000;
 end
 
 if ispc
@@ -27,14 +27,18 @@ if ispc
 else
     home = '/home/levan/HMAX/annulusExptFixedContrast';
 end
+simulation = 'simulation5'; % which simulation is this?
 conditionLoad_testing  = fullfile('simulation3','part1upright');
-conditionLoad_training = fullfile('simulation4','training');
+conditionLoad_training = fullfile(simulation,'training');
 conditionSplit = 'patchSet_3x2';
+perfUsedTraining = 'fbox';
+perfUsedTesting  = 'wedge';
 
 loadLoc_singles        = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000');
-saveLoc                = fullfile(home,conditionLoad_testing,'data',conditionSplit,'lfwSingle50000','combinations',...
+saveLoc                = fullfile(home,simulation,'testing','data',conditionSplit,'lfwSingle50000','combinations',...
                                   combination_type,'doublets',...
-                                 [int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches']);
+                                 [int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches_' ...
+                                 perfUsedTraining '_x_' perfUsedTesting]);
 combMatrixLoc_doublets = fullfile(home,conditionLoad_training,'data',conditionSplit,'lfwSingle50000','combinations',...
                                   combination_type,'doublets',...
                                   [int2str(nTPatches) 'TPatches' int2str(nCPatches) 'CPatches']...
@@ -44,7 +48,7 @@ if ~exist(saveLoc,'dir')
     mkdir(saveLoc)
 end
 
-runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
+runParameterComments = 'none'; %input('Any comments about the run?\n'); %#ok<*NASGU>
 
 load(fullfile(combMatrixLoc_doublets,'combMatrix'));
 save(fullfile(saveLoc,'combMatrix_Source'),'combMatrix');

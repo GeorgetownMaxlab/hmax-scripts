@@ -3,8 +3,8 @@ function CUR_annulus_Wedge_Calculation(...
                     saveLoc,...
                     wedgeInDeg)
 
-% This script is adjusted to perform localization for any size of patches.
-
+% This script is called by CUR_genLoc.m. 
+% It will create imgHitsWedge maps for various sizes of wedges.
                 
 %% Define global variables and load files.
 

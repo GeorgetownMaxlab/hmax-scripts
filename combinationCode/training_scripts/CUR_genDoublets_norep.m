@@ -19,18 +19,18 @@ acrossCombination = 'patchSet_3x2';
 combination_type  = 'find_CPatches';
 
 if (nargin < 1)
-    nPatchesAnalyzed = 25000;
-    nTPatches        = 20;
+    nPatchesAnalyzed = 50000;
+    nTPatches        = 100;
     nTPatchesPerLoop = 10;
-    nCPatches        = 10;
+    nCPatches        = 1000;
 end
 
 runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
 
 if ispc
-    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4';
+    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation5';
 else
-    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation4';
+    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation5';
 end
 
 loadLoc = fullfile(home,condition,'data',acrossCombination,'lfwSingle50000');

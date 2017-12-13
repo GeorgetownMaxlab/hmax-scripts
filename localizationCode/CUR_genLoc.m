@@ -8,17 +8,18 @@ dbstop if error;
 
 if (nargin < 4)
     nPatchesAnalyzed     = 50000;
-    nPatchesPerLoop      = 2500;
+    nPatchesPerLoop      = 2000;
     startingPatchLoopIdx = 1;
 end
 
 if (nargin < 1)
-    condition = 'annulusExptFixedContrast/simulation3/part1upright/';
+    condition = 'annulusExptFixedContrast/simulation5/training/';
 end
 
 % nImgsAnalyzed        = 720;
-maxSize              = 579;
-splitID              = 'lfwSingle50000';
+% maxSize              = 579;
+maxSize              = 1067;
+splitID              = 'lfwSingle50000'; %display('SANDBOX CONDITION');
 % tasks = {'patchSetAdam','patchSet_1x2','patchSet_2x1','patchSet_1x3','patchSet_3x1','patchSet_2x3','patchSet_3x2'};
 tasks = {'patchSet_3x2'};
 % patchSizes = [2,1,2,1,3,2,3;...

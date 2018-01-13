@@ -339,17 +339,17 @@
 % 
 
 %%
-
-clear; clc; close;
-load('C:\Users\Levan\HMAX\annulusExpt\patchSet2\lfwSingle146\imageDifficultyData_146_Patches.mat')
-
-plot(sumStatsPatch);
-hold on
-load('C:\Users\Levan\HMAX\annulusExpt\patchSet2\lfwSingle146_Run2\imageDifficultyData_146_Patches.mat')
-plot(sumStatsPatch);
-
-xlabel('146 patches')
-ylabel('Localization %')
-
-legend('BMP format','jpeg format')
+% 
+% clear; clc; close;
+% load('C:\Users\Levan\HMAX\annulusExpt\patchSet2\lfwSingle146\imageDifficultyData_146_Patches.mat')
+% 
+% plot(sumStatsPatch);
+% hold on
+% load('C:\Users\Levan\HMAX\annulusExpt\patchSet2\lfwSingle146_Run2\imageDifficultyData_146_Patches.mat')
+% plot(sumStatsPatch);
+% 
+% xlabel('146 patches')
+% ylabel('Localization %')
+% 
+% legend('BMP format','jpeg format')
 

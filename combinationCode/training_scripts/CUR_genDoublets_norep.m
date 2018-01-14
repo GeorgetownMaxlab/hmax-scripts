@@ -1,4 +1,4 @@
-function CUR_genDoublets_norep(nPatchesAnalyzed,nTPatches,nTPatchesPerLoop,nCPatches,condition)
+function CUR_genDoublets_norep(nPatchesAnalyzed,nTPatches,nTPatchesPerLoop,nCPatches,simulation,condition)
 
 % This configuration of the script ignores the order of indices of the
 % TPatch and CPatch when looking for doublets. So a doublet with TPatch and
@@ -11,7 +11,7 @@ function CUR_genDoublets_norep(nPatchesAnalyzed,nTPatches,nTPatchesPerLoop,nCPat
 dbstop if error;
 mainStartTime = tic;
 
-if (nargin < 5)
+if (nargin < 6)
     condition = 'training';
 end
 
@@ -28,9 +28,9 @@ end
 runParameterComments = 'none';%input('Any comments about the run?\n'); %#ok<*NASGU>
 
 if ispc
-    home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation5';
+    home = fullfile('C:\Users\levan\HMAX\annulusExptFixedContrast',simulation);
 else
-    home = '/home/levan/HMAX/annulusExptFixedContrast/simulation5';
+    home = fullfile('/home/levan/HMAX/annulusExptFixedContrast',simulation);
 end
 
 loadLoc = fullfile(home,condition,'data',acrossCombination,'lfwSingle50000');

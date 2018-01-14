@@ -175,7 +175,7 @@ xlabel('Face-box perf. on simulation5')
 ylabel('Wedge-30 perf. on subject images')
 
 %% Plot performance of singles on set1 and set2.
-% Chance what files are loaded for set1 and set2 to compare various
+% Change what files are loaded for set1 and set2 to compare various
 % options.
 clear; clc; dbstop if error; %close all;
 
@@ -192,7 +192,7 @@ load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50
     sumStatsPatch_set1 = sumStatsPatch_set1(1:nPatches);
 
 % Load set 2 data.
-set2_simulation = 'simulation5';
+set2_simulation = 'simulation6';
 set2_condition  = 'training';
 load(fullfile(home,set2_simulation,set2_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_FaceBox.mat'));
     % Resort patches

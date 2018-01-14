@@ -1,4 +1,4 @@
-function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,combination_type)
+function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,simulation,combination_type)
 % run on the other set. 
 
 % This script uses the face-box data as the training data and the wedge
@@ -13,7 +13,7 @@ function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,combination_type)
 % clear; clc;
 dbstop if error;
 
-if (nargin < 3)
+if (nargin < 4)
     combination_type = 'find_CPatches';
 end
 
@@ -22,12 +22,15 @@ if (nargin < 1)
     nCPatches = 1000;
 end
 
+if (nargin < 3)
+    simulation = 'simulation6'; % which simulation is this?
+end
+
 if ispc
     home = 'C:\Users\levan\HMAX\annulusExptFixedContrast';
 else
     home = '/home/levan/HMAX/annulusExptFixedContrast';
 end
-simulation = 'simulation5'; % which simulation is this?
 conditionLoad_testing  = fullfile('simulation3','part1upright');
 conditionLoad_training = fullfile(simulation,'training');
 conditionSplit = 'patchSet_3x2';

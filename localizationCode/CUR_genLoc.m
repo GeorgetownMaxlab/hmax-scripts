@@ -1,4 +1,4 @@
-function CUR_genLoc(condition,nPatchesAnalyzed,nPatchesPerLoop,startingPatchLoopIdx)
+function CUR_genLoc(condition,nPatchesAnalyzed,nPatchesPerLoop,startingPatchLoopIdx,maxSize)
 
 % This script allows to break up localization code and parallelize
 % computation. It parallelizes on the patches.
@@ -17,8 +17,10 @@ if (nargin < 1)
 end
 
 % nImgsAnalyzed        = 720;
-% maxSize              = 579;
-maxSize              = 1067;
+if (nargin < 5)
+    % maxSize              = 579;
+    maxSize              = 1067;
+end
 splitID              = 'lfwSingle50000'; %display('SANDBOX CONDITION');
 % tasks = {'patchSetAdam','patchSet_1x2','patchSet_2x1','patchSet_1x3','patchSet_3x1','patchSet_2x3','patchSet_3x2'};
 tasks = {'patchSet_3x2'};

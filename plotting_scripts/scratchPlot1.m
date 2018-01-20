@@ -83,8 +83,8 @@ pause
 clear; clc; dbstop if error;
 
 home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\';
-simulation = 'simulation5';
-condition  = 'testing';
+simulation = 'simulation7'
+condition  = 'testing'
 combination_type = 'find_CPatches';
 perfUsed         = 'fbox_x_wedge';
 % perfUsed         = '';
@@ -99,7 +99,7 @@ nImgsTesting  = 1008;
 nPatches      = 50000;
 
 nTPatches     = 2000;
-nCPatches     = 2000;
+nCPatches     = 3000;
 
 scaleMin = 0;
 scaleMax = 60;
@@ -127,15 +127,15 @@ hold on
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Now singles
+%% Now singles
 clear; clc; dbstop if error; %close all;
 
 home = 'C:\Users\levan\HMAX\annulusExptFixedContrast';
 nPatches = 50000;
 
 % Load set 1 data
-set1_simulation = 'simulation3';
-set1_condition  = 'part1upright';
+set1_simulation = 'simulation3'
+set1_condition  = 'part1upright'
 % load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_FaceBox.mat'));
 load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_Wedge_30.mat')); display('Singles data shows wedge performance');
     % Get the first nPatches patch performance.
@@ -144,8 +144,8 @@ load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50
     sumStatsPatch_set1 = sumStatsPatch_set1(1:nPatches);
 
 % Load set 2 data.
-set2_simulation = 'simulation5';
-set2_condition  = 'training';
+set2_simulation = 'simulation7'
+set2_condition  = 'training'
 load(fullfile(home,set2_simulation,set2_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_FaceBox.mat'));
     % Resort patches
     [sorted,idx] = sort(idx_best_patches,'ascend');
@@ -168,10 +168,10 @@ hold on
 
 % Add legends, 45 degree line, etc.
 legend('Doublets','Singles');
-title('Simulation5 vs Subject Images generalization')
+title([set2_simulation ' vs Subject Images generalization'])
 plot(scaleMin:scaleMax,scaleMin:scaleMax)
-plot(ones(1,61)*20,0:60);
-xlabel('Face-box perf. on simulation5')
+% plot(ones(1,61)*20,0:60);
+xlabel(['Face-box perf. on ' set2_simulation])
 ylabel('Wedge-30 perf. on subject images')
 
 %% Plot performance of singles on set1 and set2.
@@ -238,7 +238,7 @@ nImgsTesting  = 1008;
 % nImgsTesting  = 1000;
 nPatches      = 50000;
 
-nTPatches     = 2000;
+nTPatches     = 3000;
 nCPatches     = 2000;
 
 scaleMin = 0;

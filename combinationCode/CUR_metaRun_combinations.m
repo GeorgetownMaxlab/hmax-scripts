@@ -19,11 +19,11 @@ dbstop if error;
 
 if (nargin < 1)
     nPatches = 50000;
-    nTPatchesAll = [100, 1000,200, 1000,2000,2000]
-    nCPatchesAll = [1000,100, 1000,200, 2000,3000]
+    nTPatchesAll = [1000,200, 1000,2000,2000]
+    nCPatchesAll = [100, 1000,200, 2000,3000]
     
-    % nTPatchesAll = [10,20];
-    % nCPatchesAll = [20,10];
+%     nTPatchesAll = [10,20];
+%     nCPatchesAll = [20,10];
     
     simulation = 'simulation6';
 end
@@ -32,7 +32,7 @@ for iRun = 1:length(nTPatchesAll)
     iRun
     % Create doublets using various combination of TPatches and CPatches.
     CUR_genDoublets_norep(nPatches,nTPatchesAll(iRun),...
-                          ceil(nTPatchesAll(iRun)/32),...
+                          ceil(nTPatchesAll(iRun)/25),...
                           nCPatchesAll(iRun),...
                           simulation);
     display(['done with making doublets for run' int2str(iRun)]);

@@ -1,3 +1,21 @@
+%% Get faces from ExptDesign
+clear; clc; dbstop if error;
+
+home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation6\training';
+
+if ~exist(fullfile(home,'face_images'))
+    mkdir(fullfile(home,'face_images'));
+end
+
+load(fullfile(home,'exptDesign.mat'));
+
+faceNames = {exptDesign(:).faceName}';
+[faceNames_unique,ia,ic] = unique(faceNames);
+
+for iImg = 1:length(ia)
+    imwrite(exptDesign(ia(iImg)).faceImg,fullfile(home,'face_images',[faceNames_unique{iImg} '.png']));
+end
+
 %% Create Florence_bgs_indexed
 clear; clc; dbstop if error;
 

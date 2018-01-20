@@ -5,14 +5,22 @@
 % making sure they're pasted outside of the annulus locations.
 % - Blur the blacked out annulus edges.
 
+% Jacobs faces will be resized to be 78 pixels in height, being pasted in
+% the 730x927 bg images. This will match exactly the psych experiment. The
+% final pasted images should be resized to maxSize 579 as was done for
+% analyzing the psych experiment images.
 clear; clc; dbstop if error;
 
+simulation = 'simulation7';
 bgLoc      = 'C:\Users\levan\HMAX\annulusExptFixedContrast\bgs_used_in_psych\Florence_bgs_indexed_resized';
 humanaeLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';
-home       = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation6';
+home       = fullfile('C:\Users\levan\HMAX\annulusExptFixedContrast\',simulation);
 facesLoc   = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM\HumanaeFaces5Processed\faces';
 
 condition = 'training';
+
+% Clear the images folder
+delete([fullfile(home,condition,'images') '\*']);
 
 % maskPaths = lsDir(fullfile(humanaeLoc,'HumanaeFaces5Processed','Mask'),{'jpg'});
 maskPaths = lsDir(fullfile(humanaeLoc,'HumanaeFaces5Processed','new_gimp_masks_final','both_genders'),{'png'});
@@ -20,9 +28,8 @@ locPaths  = lsDir(fullfile(humanaeLoc,'HumanaeFaces5Processed','locations'),{'ma
 
 bgPaths = sort_nat(lsDir(bgLoc,{'png'})');
 
-resizeDims = 50*766/500; % Jacob's face images are about 766 pixels, but the face itself is about 500.
-% To resize the image so that the face is 50 pixels, the image must be
-% resized to 50*766/500 = 76.6.
+targetFaceSize = 78; % So actual face height will be 78 pixels. See below for explanations.
+
 % resizeBg   = 600;
 exampleBg = imread(bgPaths{1});
 % exampleBg = imresize(exampleBg,resizeBg/size(exampleBg,1));
@@ -83,6 +90,7 @@ annulus = ~annulus; % This reverses annulus.
 
 %% Start main loop
 parfor iFace = 1:length(facePaths);
+%     display('Parfor is off!!!!');
     iFace
     [~,faceFileName,faceExt] = fileparts(facePaths{iFace});
     [~,bgFileName,bgExt]     = fileparts(bgPaths{iFace});
@@ -103,9 +111,25 @@ parfor iFace = 1:length(facePaths);
     facepoints = facepoints.facepoints;
     % imshow(uint8(bg));
     
+    % Calculate resizeDims variable based on actual size of the face as
+    % measured by Jacob with his facepoints variables. This takes the
+    % headtop coordinate vs the chin coordinate to get the height of the
+    % face.
+    faceHeight = facepoints.chin(2) - facepoints.headtop(2);
+    % To resize the actual face to 80 pixels, how much should you resize
+    % the whole image? 
+    % imageSize       -> faceHeight
+    % targetImageSize -> targetFaceSize
+    % So targetImageSize = imageSize*targetFaceSize/faceHeight
+    targetImageSize = targetFaceSize * size(faceImg,1) / faceHeight;
+    
     % Resize the face image and mask.
-    faceImg = imresize(faceImg,resizeDims/size(faceImg,1));
-    maskImg = imresize(maskImg,resizeDims/size(maskImg,1));
+%     imtool close all
+%     imtool(faceImg);
+    faceImg = imresize(faceImg,[targetImageSize NaN]);
+%     imtool(faceImg);
+    maskImg = imresize(maskImg,[targetImageSize NaN]);
+%     imtool(maskImg);
     assert(isequal(size(faceImg),size(maskImg)) == 1,'resized dimensions of face and mask don''t match');
     
     % Choose the location to paste the face at.

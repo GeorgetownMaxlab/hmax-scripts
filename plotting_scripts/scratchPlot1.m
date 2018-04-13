@@ -86,7 +86,7 @@ home = 'C:\Users\levan\HMAX\annulusExptFixedContrast\';
 simulation = 'simulation7'
 condition  = 'testing'
 combination_type = 'find_CPatches';
-perfUsed         = 'fbox_x_wedge';
+perfUsed         = 'fbox_x_fbox';
 % perfUsed         = '';
 patches_type     = 'patchSet_3x2';
 
@@ -127,7 +127,7 @@ hold on
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Now singles
+% Now singles
 clear; clc; dbstop if error; %close all;
 
 home = 'C:\Users\levan\HMAX\annulusExptFixedContrast';
@@ -136,8 +136,8 @@ nPatches = 50000;
 % Load set 1 data
 set1_simulation = 'simulation3'
 set1_condition  = 'part1upright'
-% load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_FaceBox.mat'));
-load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_Wedge_30.mat')); display('Singles data shows wedge performance');
+load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_FaceBox.mat'));
+% load(fullfile(home,set1_simulation,set1_condition,'data\patchSet_3x2\lfwSingle50000\fixedLocalization\patchPerformanceInfo_Wedge_30.mat')); display('Singles data shows wedge performance');
     % Get the first nPatches patch performance.
     [sorted_indices,idx] = sort(idx_best_patches,'ascend');
     sumStatsPatch_set1 = sortSumStatsPatch(idx);
@@ -152,6 +152,10 @@ load(fullfile(home,set2_simulation,set2_condition,'data\patchSet_3x2\lfwSingle50
     sumStatsPatch_set2 = sortSumStatsPatch(idx);
     sumStatsPatch_set2 = sumStatsPatch_set2(1:nPatches);
 
+% Plotting purple line
+nTPatchesAbove = 2000;
+lowest_TPatch_loc = sortSumStatsPatch(nTPatchesAbove);
+    
 % Sart plotting
 scaleMin = 0;
 scaleMax = 60;
@@ -170,9 +174,9 @@ hold on
 legend('Doublets','Singles');
 title([set2_simulation ' vs Subject Images generalization'])
 plot(scaleMin:scaleMax,scaleMin:scaleMax)
-% plot(ones(1,61)*20,0:60);
+plot(ones(1,61)*lowest_TPatch_loc,0:60);
 xlabel(['Face-box perf. on ' set2_simulation])
-ylabel('Wedge-30 perf. on subject images')
+ylabel('Face-box perf. on subject images')
 
 %% Plot performance of singles on set1 and set2.
 % Change what files are loaded for set1 and set2 to compare various

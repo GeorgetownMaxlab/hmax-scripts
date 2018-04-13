@@ -155,8 +155,8 @@ for iPatch = 1:nPatchesPerLoop
         elseif ySizeOrig == 1094
             radius = 75; %1094*50/730=74.93
         elseif ySizeOrig == 600 % These are the dimensions from Jacob's image set.
-            radius = 41;
-        else%600*50/730
+            radius = 41; %600*50/730
+        else
             error('Image size isn''t right')
         end
         

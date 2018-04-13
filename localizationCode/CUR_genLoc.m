@@ -3,6 +3,8 @@ function CUR_genLoc(condition,nPatchesAnalyzed,nPatchesPerLoop,startingPatchLoop
 % This script allows to break up localization code and parallelize
 % computation. It parallelizes on the patches.
 
+% CUR_genLoc('annulusExptFixedContrast/simulation7/training/',50000,2000,1,579)
+% CUR_genLoc('annulusExptFixedContrast/simulation7/training/',100,50,1,579)
 %% Global setup
 dbstop if error;
 

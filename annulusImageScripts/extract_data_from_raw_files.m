@@ -1,4 +1,13 @@
-% helper function.
+% helper function for extracting images and information from Florence's
+% files, such as:
+% - Compressing the file sizes.
+% - creating the exptDesign variable which contains all the info about images in an organized structure array.
+% - Check that face cartesian coordinates match with polar angle in Florence's images.
+% - extract all the images from Florence's files, with or without splitting them in "training" and "testing" sets.
+
+% Enable the right flag in the beginning and uncomment the desired section
+% of the code to execute it.
+
 clear; clc; close all;
 
 reduceFileSize   = 0;
@@ -82,6 +91,8 @@ if createExptDesign
     save(fullfile(saveLoc,saveFolder,'upright','exptDesign.mat'),'exptDesign')
 end
 %% test that coordinates match with angle
+% Just a sanity check that cartesian coordinates of the face in the image
+% match with the polar angle.
 if testCoordsMatch
     dbstop if error
     condition = 'part2upinv';

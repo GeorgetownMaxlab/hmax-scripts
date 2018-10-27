@@ -17,12 +17,12 @@ img_loadLoc = fullfile('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation1
 reconMask_save_loc = fullfile('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation1',condition,'recreated_masks\');
 reconFace_save_loc = fullfile('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation1',condition,'recreated_faces\');
 
-if ~exist(reconMask_save_loc)
-    mkdir(reconMask_save_loc)
-end
-if ~exist(reconFace_save_loc)
-    mkdir(reconFace_save_loc)
-end
+% if ~exist(reconMask_save_loc)
+%     mkdir(reconMask_save_loc)
+% end
+% if ~exist(reconFace_save_loc)
+%     mkdir(reconFace_save_loc)
+% end
 
 imgPaths = lsDir(img_loadLoc,{'png'})';
 [imgPaths_natsort,~] = sort_nat(imgPaths);

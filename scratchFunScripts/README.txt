@@ -1,0 +1,1 @@
+These are just files I used as scratchpads, developing certain pieces of scripts. Safe to delete but could have useful parts of old code so I just kept them around.

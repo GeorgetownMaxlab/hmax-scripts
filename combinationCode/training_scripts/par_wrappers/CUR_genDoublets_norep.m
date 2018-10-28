@@ -1,10 +1,16 @@
 function CUR_genDoublets_norep(nPatchesAnalyzed,nTPatches,nTPatchesPerLoop,nCPatches,simulation,condition)
 
+% the prefix "gen" usually means that the function will parallelize
+% calculations. 
+
+% This is a general wrapper script for efficiently creating doublet
+% combinations of patches.
+
 % This configuration of the script ignores the order of indices of the
 % TPatch and CPatch when looking for doublets. So a doublet with TPatch and
 % CPatch indices of (1,100) and (100,1) are cosidered as same and one is skipped. 
 
-% Script calls CUR_findScaledDoublets_FaceBox_par.m 
+% Script calls CUR_findScaledDoublets_FaceBox_par.m and CUR_make_scaledDoublet_c2_imgHitsFaceBox
 
 %% GLOBAL STUFF
 % clear; clc;
@@ -15,8 +21,15 @@ if (nargin < 6)
     condition = 'training';
 end
 
-acrossCombination = 'patchSet_3x2';
-combination_type  = 'find_CPatches';
+% Variable specifying the name of the subfolder for saving the data in.
+% Specifies which patch-types were combined. For some simulations, 
+% different-sized patches were combined.
+acrossCombination = 'patchSet_3x2'; 
+% Variable specifying the name of the subfolder to save data in. Specifies
+% which strategy of finding complementary patches was used. "find_CPatches" 
+% simply looks for top complementary patches, whereas "find_CPatches_thresholding"
+% Only considers CPatches that have certain absolute performance value.
+combination_type  = 'find_CPatches'; 
 
 if (nargin < 1)
     nPatchesAnalyzed = 50000;

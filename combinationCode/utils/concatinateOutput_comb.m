@@ -1,5 +1,8 @@
 function concatinateOutput_comb(loadLoc,nTPatchesPerLoop,nTPatches,nCPatches)
 
+% This function simply concatinates output files from combination script
+% into one file. Its usually called by higher order scripts.
+
 rangeStr = 1:nTPatchesPerLoop:nTPatches+nTPatchesPerLoop;
 
 %% Predefine the matrices so its faster.

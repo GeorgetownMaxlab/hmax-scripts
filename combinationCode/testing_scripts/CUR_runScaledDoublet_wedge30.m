@@ -4,8 +4,8 @@ function CUR_runScaledDoublet_wedge30(nTPatches,nCPatches,simulation,combination
 % This script uses the face-box data as the training data and the wedge
 % criterion of 30 degrees for the testing evaluation.
 
-% Use the CUR_runScaledDoublet_FaceBox.m to evaluate doublets on the
-% testing set using the face-box criterion.
+% If you instead want to use the face-box criterion, use the 
+% CUR_runScaledDoublet_FaceBox.m
 
 % This script has been updated to have saveLoc be in the local simulation
 % "testing" folder.

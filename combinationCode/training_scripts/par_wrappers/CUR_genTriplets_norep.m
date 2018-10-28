@@ -1,5 +1,15 @@
 function CUR_genTriplets_norep(nTPatchesLoad,nCPatchesLoad,nTPatches,nTPatchesPerLoop,nCPatches,condition)
 
+% the prefix "gen" usually means that the function will parallelize
+% calculations. 
+
+% This is a general wrapper script for efficiently creating triplet
+% combinations of patches.
+
+% This configuration of the script removes any repeated triplets.
+
+% Script calls CUR_findScaledDoublets_FaceBox_par.m and CUR_make_scaledDoublet_c2_imgHitsFaceBox
+
 %% GLOBAL STUFF
 % clear; clc;
 dbstop if error;

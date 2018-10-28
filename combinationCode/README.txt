@@ -1,7 +1,22 @@
-CUR_combinePatchesAnnulus.m - combining patches (either doublets or triplets) through winner take all strategy. Does a MAX operation across all scale bands of all patches being combined. The script does not implement any relative scaling of responses from patches.
+This folder contains myriad of variations of code for various strategies of combining patches.
 
-CUR_findScaledDoublets.m - old script for taking top N T-patches, finding a set of complementary C-patches for each T-patch, and then finding the optimal scaling factor for the doublet. This script used the wedge criterion.
+Latest training scripts that were used in simulations are:
+---------------------------------------------------------
 
-CUR_findScaledDoublets_FaceBox.m - same as CUR_findScaledDoublets.m except uses the face box criterion.
+CUR_genDoublets_norep.m:
+For creation of doublets from the training set of images. Finds complementary patches, avoiding repetition of combinations. See inside for description. See which scripts it calls.
 
-CUR_genDoublets_norep.m - this is the best one to use, as of 2017-08-24. It uses the original combination strategy, of finding T-patches and C-patches, then scaling factors, and then removing from the data those doublets that have the same indices, such as doublet consisting of (100,1) t-patch and c-patch and (1,100) t-patch and c-patch.
+CUR_genTriplets_norep.m:
+Analogous to CUR_genDoublets_norep.m script, but creates triplets from the training images using already existing doublets and another complementary third patch.
+
+
+Latest testing scripts used in simulations are:
+------------------------------------------------
+CUR_runScaledDoublet_FaceBox.m:
+Uses the doublets created on the training set, and evaluates them on the testing set of images, using face-box criterion.
+
+CUR_runScaledDoublet_wedge30.m:
+Uses the doublets created on the training set, and evaluates them on the testing set of images, using the 30 degree wedge criterion.
+
+CUR_runScaledTriplet_wedge30.m:
+Uses the triplets created on the training set, and evaluates them on the testing set of images, using the 30 degree wedge criterion.

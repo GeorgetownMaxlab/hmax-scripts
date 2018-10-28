@@ -1,6 +1,10 @@
 This folder contains myriad of variations of code for various strategies of combining patches.
+Typical pipeline is:
+(i) create doublets on the training set.
+(ii) create triplets on the training set.
+(iii) evaluate these doublets and triplets on the testing set of images. 
 
-Latest training scripts that were used in simulations are:
+Latest training scripts that were used in simulations (ex: simulation7) are:
 ---------------------------------------------------------
 
 CUR_genDoublets_norep.m:

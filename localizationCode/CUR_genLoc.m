@@ -3,6 +3,28 @@ function CUR_genLoc(condition,nPatchesAnalyzed,nPatchesPerLoop,startingPatchLoop
 % This script allows to break up localization code and parallelize
 % computation. It parallelizes on the patches.
 
+% The main script it calls to calculate C2 coordinates is:
+% CUR_annulus_FaceBox_and_AngularDegree_Calculation.m
+
+% The script will then:
+% (i)   
+% concatinate the output of various loops that are saved separately
+% (ii)  
+% calculate performance of the patches using various wedge criteria, by calling the CUR_annulus_Wedge_Calculation.m script.
+% (iii) 
+% create a separate file storing performance information for all patches, using either face-box or wedge criterion. 
+% Done by calling patchPerformanceInfo_FaceBox.m or patchPerformanceInfo_Wedge.m scripts.
+
+% VARIABLES:    
+% 
+%     condition            - a string, specifies the folder to save data in, based on which simulation it is and whether its training or testing set.
+%     nPatchesAnalyzed     - how many of total patches to analyze.
+%     nPatchesPerLoop      - how many patches to analyze for each loop.
+%     startingPatchLoopIdx - in case the script crashes after having analyzed several loops. Lets you continue calculation from any loop.
+%     maxSize - 
+
+
+% For quick runs: 
 % CUR_genLoc('annulusExptFixedContrast/simulation7/training/',50000,2000,1,579)
 % CUR_genLoc('annulusExptFixedContrast/simulation7/training/',100,50,1,579)
 %% Global setup
@@ -23,7 +45,7 @@ if (nargin < 5)
     % maxSize              = 579;
     maxSize              = 1067;
 end
-splitID              = 'lfwSingle50000'; %display('SANDBOX CONDITION');
+splitID              = 'lfwSingle50000';
 % tasks = {'patchSetAdam','patchSet_1x2','patchSet_2x1','patchSet_1x3','patchSet_3x1','patchSet_2x3','patchSet_3x2'};
 tasks = {'patchSet_3x2'};
 % patchSizes = [2,1,2,1,3,2,3;...

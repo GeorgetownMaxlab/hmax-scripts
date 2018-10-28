@@ -1,9 +1,12 @@
-% blurr all images
+% Script to iteratively blur annulus edges for many images.
+% Also allows blurring of various width.
+% This function calls the blurAnnulusEdges.m function.
 
 %% Global stuff
 clear; clc;
 
-allWidths = [5]; % a value of 5 will give you a blur of width 2*5=10 pixels. you can make this a vector of several values, and it will look through and generate blurs of various widths.
+allWidths = [5]; % a value of 5 will give you a blur of width 2*5=10 pixels. you can make this a vector of several values, and it will loop through and generate blurs of various widths.
+
 for iLoop = 1:length(allWidths)
 d = allWidths(iLoop);
 d

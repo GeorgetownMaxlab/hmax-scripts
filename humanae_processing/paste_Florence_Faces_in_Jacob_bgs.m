@@ -4,6 +4,8 @@
 % performance would be comparable to Florence's faces pasted in Florence's
 % backgrounds. 
 
+% Used for simulation4
+
 clear; clc; dbstop if error; close all;
 
 home    = 'C:\Users\levan\HMAX\annulusExptFixedContrast\simulation4';

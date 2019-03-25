@@ -2,6 +2,8 @@
 % It will paste them in the same location, except if luminance equalization
 % produces a ghost face.
 
+% used for simulaiton5
+
 clear; clc; dbstop if error;
 
 humanaeLoc = 'C:\Users\levan\HMAX\HumanaeFaces20170707_JGM';

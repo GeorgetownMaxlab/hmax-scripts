@@ -1,3 +1,5 @@
+% Simulation 7 script
+
 % This script will paste do the following:
 % - Take Florence's original bgs used in experiment.
 % - Black out the annulus in those images.

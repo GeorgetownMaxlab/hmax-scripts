@@ -12,7 +12,7 @@ Notes:
 ## Scripts:
 
 CUR_metaRun_C2_loop.m:
-A wrapper script to run CUR_runAnnulusExpt2.m for different sized patches.
+A convenient wrapper script to run CUR_runAnnulusExpt2.m for different sized patches.
 
 
 ## Folders

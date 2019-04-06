@@ -1,8 +1,9 @@
 # hmax-scripts
-Only the scripts used with HMAX simulations. Actual output files are located elsewhere.
 
 These scripts are adaptations of the HMAX to the analysis of the CRCNS project. 
 The HMAX was used to detect faces in images that were seen by participants during behavioral and EEG experiments.
+
+Only the scripts used with HMAX simulations. Actual output files are located elsewhere.
 
 Folders contain scripts that were originally provided by Josh Rule to Levan Bokeria and Ben Trans. 
 
@@ -17,11 +18,13 @@ A convenient wrapper script to run CUR_runAnnulusExpt2.m for different sized pat
 
 ## Folders
 
-annulusImageScripts/:
+annulusImageScripts/:  
+Scripts used to manipulate images: annulize them, view contrast distribution, extract images from raw output files from CRCNS behavioral experiments, etc.
 
-blurringAnnulusScripts/:
+blurringAnnulusScripts/:  
+The scripts in this folder perform blurring of the edges of the annulus that is superimposed on an image. 
 
-classSpecificScripts/: 
+classSpecificScripts/:   
 contains old code. Not used anymore.  
 
 clusteringScripts/:
@@ -36,10 +39,8 @@ main HMAX code doing all the S1, C1, S2, C2 calculations. Start with CUR_runAnnu
 crossValidationSplitting/:
 Used in simulation3 and 4. Not useful anymore. See inside.
 
-
 debuggingScripts/:
 Debugging scripts used by Levan, safe to delete.
-
 
 humanae_processing/:
 Set of scripts used to paste the Humanae images into backgrounds.
@@ -55,7 +56,6 @@ Set of scripts used to recreate the pixel location in the image that gave rize t
 
 scratchFunScripts/:
 Scripts for code development and testing. Safe to delete.
-
 
 EEG_analysis_scripts:/
 Set of scripts used to analyze the images from the EEG experiment of CRCNS run by Florence Campana.

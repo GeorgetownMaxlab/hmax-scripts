@@ -4,7 +4,11 @@ function CUR_annulus_Wedge_Calculation(...
                     wedgeInDeg)
 
 % This script is called by CUR_genLoc.m. 
-% It will create imgHitsWedge maps for various sizes of wedges.
+% It will create imgHitsWedge maps for various sizes of wedges. Depending
+% on how wide of a wedge you consider, a patch will either have "hit" the
+% face in a given image, or "missed" it. So for each wedge size, you get a
+% separate imgHitsWedge map, showing 1 or 0 for every cell entry,
+% indicating whether there was a "hit" or a "miss".
                 
 %% Define global variables and load files.
 

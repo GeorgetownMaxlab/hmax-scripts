@@ -31,6 +31,7 @@ end
 
 dbstop if error;
 
+% Define start and end patches that are analyzed on this loop
 idxPatchStart = (iPatchLoop-1)*nPatchesPerLoop+1;
 idxPatchEnd   = (iPatchLoop)  *nPatchesPerLoop;
 
@@ -38,7 +39,7 @@ if ~exist(saveLoc,'dir')
     mkdir(saveLoc)
 end
 
-
+% Parameters of HMAX
 rfSizes = 7:2:39;
 c1Space = 8:2:22;
 c1Scale = 1:2:18;
@@ -48,42 +49,17 @@ load(fullfile(condition,'exptDesign.mat'));
 load(fullfile(loadLoc, ['bestLocC2'   quadType])); %variable in workspace called 'bestLoc'
 load(fullfile(loadLoc, ['bestBandsC2' quadType])); %variable in workspace called 'bestBands'
 
-%% ADJUST THE BEST LOC VALUES BASED ON RESIZING DONE AT C2 CALCULATION
-% The code below was taken out to the parent code CUR_genLoc.m
-
-% % ySizeOrig and xSizeOrig are dimensions of images that were presented to
-% % subjects during psychophysical experiments. All the face-location data
-% % given by Florence is relative to these dimensions. 
-% % load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation1\part2Inverted\upright\data\patchSetAdam\lfwSingle50000\sandbox\dimensions.mat');
-% % load('C:\Users\levan\HMAX\annulusExptFixedContrast\simulation1\part2Inverted_2nd_cohort\upright\data\patchSetAdam\lfwSingle50000\sandbox\dimensions.mat');
-% 
-% % Predefine the variables
-% dimsOrig       = zeros(length(facesLoc{1}),2);
-% dimsResized    = zeros(length(facesLoc{1}),2);
-% scalingFactors = zeros(1,length(facesLoc{1}));
-% 
-% for iImg = 1:nImgsAnalyzed %length(facesLoc{1})
-% %     if mod(iImg,100) == 0
-% %         display(['Calculating scaling factors. iImg = ' int2str(iImg)]);
-% %     end
-%     dimsOrig   (iImg,1:2) = size(imread(facesLoc{1}{iImg}));
-%     % These are the dimensions of images pushed through HMAX.
-%     dimsResized(iImg,1:2) = size(resizeImage(imread(facesLoc{1}{iImg}),maxSize));
-% 
-%     % Now obtain the scaling factor for bestLoc variables, so they can be
-%     % transformed to be relative to dimensions of the images seen by subjects.
-%     % Then they can be compared to face location values.
-%     scalingFactors(iImg) = dimsOrig(iImg,1)/dimsResized(iImg,1);
-%     assert(isequal(round(scalingFactors(iImg),2),round(dimsOrig(iImg,2)/dimsResized(iImg,2),2)),'somethings not right with image resizing');
-% end
 %% SEE IF C2 COMES FROM THE WEDGE OR FACE BOX.
 if iscell(bestBands)
     bestBands = horzcat(bestBands{:});
     bestLoc   = horzcat(bestLoc{:});
 end
 
+% Create the variables that will be nPatches by nImages. Each cell is 1 or
+% 0 based on whether that patch hit the face in that image.
 imgHitsWedgePatchLoop   = zeros(nPatchesPerLoop,nImgsAnalyzed);
 imgHitsFaceBoxPatchLoop = zeros(nPatchesPerLoop,nImgsAnalyzed);
+
 angularDistPatchLoopRad = zeros(nPatchesPerLoop,nImgsAnalyzed);
 angularDistPatchLoopDeg = zeros(nPatchesPerLoop,nImgsAnalyzed);
 
@@ -179,7 +155,8 @@ for iPatch = 1:nPatchesPerLoop
 % visualize = visualizeLocations(ySizeOrig,xSizeOrig,scalingFactors(iImg),faceBoxOrig,x1p,x2p,y1p,y2p,annulusImgToShow);
 % sanityCheckPatchLoop.visualizePositions{iPatch,iImg} = visualize;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
+
+%% CHECK THE FACE BOX LOCALIZATION         
     if y2p > faceBoxResized(3) && y1p < faceBoxResized(4) && x1p < faceBoxResized(2) && x2p > faceBoxResized(1) 
        %if best match is within where the face is.
         imgHitsFaceBoxPatchLoop(iPatch,iImg) = 1;

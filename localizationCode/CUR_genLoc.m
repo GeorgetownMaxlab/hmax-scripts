@@ -59,8 +59,7 @@ patchSizes = [3;...
               4;...
               nPatchesAnalyzed];
 
-wedgeInDeg = [90,45,30,20,15,10]; % This is the angle of the FULL wedge.
-
+% Close the parpool if its already open. Then restart it with 25 cores.
 if ~ispc
     if ~isempty(gcp('nocreate'))
         delete(gcp)
@@ -85,11 +84,16 @@ for iTask = 1:numel(tasks)
         mkdir(saveLoc)
     end
     
+    % Start a diary file that will record output of command window. Useful
+    % for errors
     diary(fullfile(saveLoc,'diary.mat'));
     
+    % Create the hits and misses folders, where you can optionally save
+    % recreated C2 locations as black rectangles in the images.
 %     mkdir(fullfile(saveLoc,'responseOverlays','hits'));
 %     mkdir(fullfile(saveLoc,'responseOverlays','misses'));     
     
+    % Check that loops are setup correctly.
     if mod(nPatchesAnalyzed,nPatchesPerLoop)~=0
         input = 'loopping messed up'; %#ok<*NASGU>
     else
@@ -100,7 +104,7 @@ for iTask = 1:numel(tasks)
     currentPatchSizes = patchSizes(:,iTask);
     
     % Load and transform facesLoc.mat file
-    load(fullfile(loadLoc,'facesLoc.mat')); %variable in workspace called 'facesLoc']
+    load(fullfile(loadLoc,'facesLoc.mat'));
     facesLoc = convertFacesLocAnnulusFixedContrast(facesLoc,ispc); %Convert the linux file paths to windows file paths, and vice-versa if needed.
     if ~exist('nImgsAnalyzed','var')
         nImgsAnalyzed = length(facesLoc{1});
@@ -189,6 +193,9 @@ for iTask = 1:numel(tasks)
     
     %% Now calculate the imgHitsWedge maps for various sized wedges
     display(['Making hits maps for ' tasks{iTask}])
+    
+    wedgeInDeg = [90,45,30,20,15,10]; % This is the angle of the FULL wedge.
+
     CUR_annulus_Wedge_Calculation(...
         saveLoc,...
         saveLoc,...
